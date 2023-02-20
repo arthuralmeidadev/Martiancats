@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 
-const customerController = require('../controllers/customer.controller');
+const customerController = require('../.bin/customer.controller');
 const homeController = require('../controllers/home.controller');
 const adminAuthenticationController = require('../controllers/adminAuthentication.controller');
 
