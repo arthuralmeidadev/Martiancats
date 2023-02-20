@@ -1,0 +1,54 @@
+body {
+    background-image: url(/assets/logo/martiancats_dark.svg);
+    background-size: 80%;
+    background-position: 40%, 20%;
+    background-repeat: no-repeat;
+    background-color: #1a1a1a;
+    padding-inline: 30%;
+}
+
+form {
+    border: 2px solid #c83737;
+    border-radius: 10px;
+    height: 80%;
+    margin-block: 10%;
+    font-family: monospace;
+    color: #c83737;
+    padding-inline: 10%;
+    display: block;
+    user-select: none;
+}
+
+form h1 {
+    font-size: 30px; 
+    margin-block: 10%;
+}
+
+form input {
+    width: 100%;
+    background-color: transparent;
+    border-radius: 10px;
+    border: 2px solid #444;
+    color:white;
+    font-size: 15px;
+    padding: 5px;
+    margin-bottom: 5%;
+    color-scheme: dark;
+}
+
+form input[type="date"] { color: #777; }
+
+form button {
+    border: none;
+    border-radius: 10px;
+    background-color: #c83737;
+    color: white;
+    font: 20px monospace;
+    width: 30%;
+    padding: 2%;
+    margin-top: 30%;
+}
+
+form button:hover { background-color: #ea4e4e; }
+
+form button:active { background-color: #a02828; }

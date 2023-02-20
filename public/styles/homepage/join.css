@@ -1,0 +1,45 @@
+.join-container {
+    color: white;
+    background-image: url(assets/homepage/devteamwork.jpg);
+    background-repeat: no-repeat;
+    background-size: 100%;
+    background-position: 0, -50px;
+    justify-items: center;
+    border-radius: 10px;
+    position: relative;
+    padding-block: .5%;
+    margin-block: 2%;
+    margin-inline: 10%;
+}
+
+.join-container h1 {
+    margin-left: 6%;
+    color: white;
+    font: bold 60px Helvetica;
+}
+
+.join-container pre {
+    margin-top: 2%;
+    margin-left: 6%;
+    color: white;
+    font: 25px Helvetica;
+}
+
+.join-container button {
+    background-color: white;
+    color: black;
+    border: none;
+    border-radius: 5px;
+    width: 15%;
+    font: bold 20px Helvetica;
+    margin-left: 6%;
+    margin-bottom: 3%;
+    padding-block: 2%;
+    mix-blend-mode: screen;
+    transition: .3s;
+}
+
+.join-container button:active {
+    transition: 0s;
+    background-color: #b6b6b6;
+}

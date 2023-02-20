@@ -1,0 +1,23 @@
+doctype html
+html 
+    include ../../shared/includes/head.pug
+    style
+        include ../../../public/styles/homepage/header.css
+        include ../../../public/styles/homepage/home.css
+        include ../../../public/styles/homepage/services.css
+        include ../../../public/styles/homepage/account.css
+        include ../../../public/styles/homepage/join.css
+        include ../../../public/styles/homepage/contact.css
+        include ../../../public/styles/shared/footer.css
+
+        include ../../../public/styles/homepage/animations.css
+    main
+        body
+            include ./header.pug
+            include ./home.pug
+            include ./services.pug
+            include ./account.pug
+            include ./join.pug
+            include ./contact.pug
+            script(src="scripts/customer/homepage.js")
+        include ../../shared/includes/footer.pug

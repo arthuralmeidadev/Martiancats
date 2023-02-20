@@ -1,0 +1,102 @@
+.account-container {
+    display: flex;
+    color: white;
+    background-color: #c83737;
+    align-items: center;
+    font-family: monospace;
+    
+    padding-block: 1%;
+    height: 480px;
+    justify-content: center;
+    position: relative;
+}
+
+.account-container h2 {
+    font-size: 30px;
+    margin-block: 1%;
+}
+
+.account-container p { font-size: 18px; }
+
+.account-container form { border-radius: 10px; }
+
+.account-container form input {
+    color: #1a1a1a;
+    border-radius: 10px;
+    border: 0px;
+    width: 98%;
+    font: 15px monospace;
+    margin-block: 1%;
+    padding: 1%;
+}:focus-visible { outline: none; }
+
+#w-img-button {
+    margin-top: 5%;
+    justify-content: space-around;
+}
+
+.account-container form button {
+    border-radius: 10px;
+    border: 2px solid white;
+    color: #c83737;
+    background-color: white;
+    font: 18px monospace;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    margin-block: 2%;
+    padding-block: 2%;
+    padding-inline: 10%;
+}
+
+.account-container form button:active {
+    color: white;
+    background-color: #c83737;
+}
+
+.account-container form button img { width: 5%; }
+
+.switch-form p{
+    font-size: 15px;
+    display: inline;
+    margin-right: 1%;
+}
+
+.switch-form button {
+    text-decoration-line: underline;
+    background: none;
+    color: white;
+    border: none;
+    font: 15px monospace;
+    grid-column: 2;
+}
+
+.signup-container {
+    border: 2px solid white;
+    border-radius: 10px;
+    padding-inline: 5%;
+    padding-block: 1%;
+    width: 30%;
+    height: 430px;
+
+    transition: .3s;
+    animation: signup-out .3s forwards paused;
+}
+
+.login-container {
+    border: 2px solid white;
+    border-radius: 10px;
+    width: 30%;
+    height: 430px;
+    padding-inline: 5%;
+    padding-block: 1%;
+    opacity: 0;
+    
+    transition: .3s;
+    animation: login-in .3s forwards paused;
+
+    transform: translateX(400px);
+    display: none;
+}

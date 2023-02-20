@@ -1,0 +1,13 @@
+footer {
+    width: 100%;
+    justify-items: center;
+    display: grid;
+    position: relative;
+    background-color: #1a1a1a;
+}
+
+footer p {
+    color: gainsboro;
+    font-family: monospace;
+    text-justify: center;
+}

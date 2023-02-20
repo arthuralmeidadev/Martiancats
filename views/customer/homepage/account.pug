@@ -1,0 +1,30 @@
+.account-container
+    .signup-container
+        h2 Sign up
+        p Create your free martiancat account and gain access to all of our services.
+        form
+            input(type="text" placeholder="E-mail")
+            input(type="text" placeholder="First name")
+            input(type="text" placeholder="Last name")
+            button#w-img-button Create Account
+            button Create using Google
+                img(src="/assets/homepage/google-logo.png")
+            button Create using Linkedin
+                img(src="/assets/homepage/linkedin-logo.png")
+        .switch-form
+            p Already have an account?
+                button(onclick="logInLoad()") Click here!
+    .login-container
+        h2 Log in
+        p Log in to your martiancat account 
+        form
+            input(type="text" placeholder="E-mail")
+            input(type="text" placeholder="Password")
+            button#w-img-button Log in
+            button Log in with Google
+                img(src="/assets/homepage/google-logo.png")
+            button Log in with Linkedin
+                img(src="/assets/homepage/linkedin-logo.png")
+        .switch-form
+            p Not registered yet?
+                button(onclick="signUpLoad()") Click here!

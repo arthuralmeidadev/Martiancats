@@ -1,0 +1,16 @@
+.services-container
+    .services-list-container
+        h1 Services
+        mixin item(description, filename)
+            p
+                img(src=`/assets/homepage/${filename}`)
+                =description
+        +item("Desktop | Mobile Applications", "app_dice.svg")
+        +item("Ecommerce", "ecommerce.svg")
+        +item("Web Design | UX", "palette.svg")
+        +item("DevOps Automation", "automation.svg")
+        +item("Systems Integration", "integration.svg")
+        +item("Software Prototyping", "flask.svg")
+        +item("Back-end | API", "backend.svg")
+        
+    .services-img-decor
