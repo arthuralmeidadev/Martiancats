@@ -11,5 +11,4 @@ router.get('/admin-login', adminAuthenticationController.loadAdminLoginPage);
 router.post('/admin-login', adminAuthenticationController.grabAdminTokens);
 
 
-
 module.exports = router;
