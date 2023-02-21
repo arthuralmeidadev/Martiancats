@@ -13,7 +13,7 @@ async function adminAuthenticationMiddleware (req, res, next) {
         };
 
         res.locals.isOperator = payloadEncrypter.decrypt(decoded).role === "operator";
-        
+
         next();
     });
 };
