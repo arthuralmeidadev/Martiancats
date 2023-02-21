@@ -9,7 +9,7 @@ async function adminAuthenticationMiddleware (req, res, next) {
 
     jwt.verify(req.cookies.accessToken, accessTokenKey, (err, decoded) => {
         if (err) {
-            return res.redirect('/admin/refresh');
+            return res.redirect(`/admin/refresh/?path=/admin${req.url}`);
         };
 
         res.locals.isOperator = payloadEncrypter.decrypt(decoded).role === "operator";
