@@ -13,8 +13,4 @@ router.get("/", adminAuthenticationMiddleware, adminController.dashboard);
 
 router.get("/op", [adminAuthenticationMiddleware, operatorAuthenticationMiddleware], adminController.operatorDashboard);
 
-//router.get("/customer/:ids", authenticateToken, customerController.getCustomer);
-
-//router.put("/customer/:expression", authenticateToken, customerController.updateCustomer);
-
 module.exports = router;
