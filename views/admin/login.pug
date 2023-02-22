@@ -6,8 +6,8 @@ html
         body
             form(action="/admin-login" method="POST")
                 h1 Log-in
-                input(type="text" placeholder="ID" name="userid")
-                input(type="text" placeholder="dd/mm/yyyy" name="birthdate")
-                input(type="password" placeholder="Password" name="secret")
+                input(type="text" placeholder="ID" name="userid" required)
+                input(type="text" placeholder="dd/mm/yyyy" name="birthdate" required)
+                input(type="password" placeholder="Password" name="secret" required)
                 button Enter
             script(src="scripts/admin/login.js")
