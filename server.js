@@ -18,7 +18,7 @@ const database = require("./models/initialization");
 //const setupDataBase = require("./.bin/setupDatabase")
 
 
-const publicRouter = require("./routers/public.router");
+const publicRouter = require("./routers/customer.router");
 const adminRouter = require("./routers/admin.router");
 
 app.use(bodyParser.json());
