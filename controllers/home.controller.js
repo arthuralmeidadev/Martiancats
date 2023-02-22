@@ -1,5 +1,5 @@
 async function viewAll(req, res) {
-    return res.render('../views/customer/homepage/main');
+    return res.render("../views/customer/homepage");
 };
 
 module.exports = {
