@@ -35,7 +35,7 @@ async function sendVerificationEmail(req, res) {
 
 async function verifyCode(req, res) {
     const { code } = req.body;
-    return res.send(code.join(""))
+    return res.send(code)
 };
 
 module.exports = {
