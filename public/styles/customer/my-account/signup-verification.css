@@ -1,0 +1,49 @@
+body {
+    padding-inline: 30%;
+}
+
+img {
+    user-select: none;
+    width: 80%;
+    margin: 8%;
+}
+
+form {
+    font-family: monospace;
+    border: 2px solid #c83737;
+    border-radius: 10px;
+    height: 50%;
+    font-family: monospace;
+    color: #c83737;
+    padding-inline: 10%;
+    display: block;
+    user-select: none;
+}
+
+form h1 {
+    font-size: 30px;
+}
+
+form p {
+    font-size: 16px;
+}
+
+fieldset {
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    column-gap: 2%;
+    margin-bottom: 10%;
+}
+
+.code-input {
+    font-size: 40px;
+    color: #4a4a4a;
+    width: 10%;
+    height: 50px;
+    text-align: center;
+}
+
+.code-input::-webkit-inner-spin-button{
+    appearance: none;
+}
