@@ -1,17 +1,14 @@
 const fs = require("fs-extra");
-const nodemailer = require("nodemailer");
 const gmailCredentials = require("../data/gmailCredentials.json");
-const generateValidationCode = require("../helpers/generateValidationCode");
-const cachePath = "./cache/emailValidationCodes.json";
+const generateCode = require("../helpers/generateCode");
+const transporter = require("../helpers/emailTransporter")
 
+const cachePath = "./cache/emailValidationCodes.json";
 
 async function sendVerificationEmail(req, res) {
     const { signupIssuer, signupFirstName, signupLastName } = req.body;
-
     const validationCodes = await fs.readJson(cachePath);
-
-    const code = await generateValidationCode(validationCodes.map(entry => entry.code));
-
+    const code = await generateCode(validationCodes.map(entry => entry.code));
     const expiry = Math.floor(Date.now() / 1000) + 120; // 2 minutes from now
 
     const mailOptions = {
@@ -22,45 +19,49 @@ async function sendVerificationEmail(req, res) {
         priority: "high"
     };
 
-    const transporter = nodemailer.createTransport({
-        service: "gmail",
-        auth: {
-            type: "OAuth2",
-            user: gmailCredentials.provider,
-            pass: gmailCredentials.secret,
-            clientId: gmailCredentials.clientId,
-            clientSecret: gmailCredentials.clientSecret,
-            refreshToken: gmailCredentials.refresh_token
-        }
-    });
-
     validationCodes.push({ code: code, expiry: expiry });
+    await fs.writeJson(cachePath, validationCodes, { spaces: 2 });
 
-    await fs.writeJson(cachePath, validationCodes, { spaces: 2});
+    try {
+        transporter.sendMail(mailOptions)
+    } catch (err) {
+        console.group(err.message);
+        return res.sendStatus(500);
+    };
 
-    transporter.sendMail(mailOptions, (err, email) => {
-        if (err) {
-            return res.sendStatus(500);
-        };
-
-        return res.render("../views/customer/my-account/signup-verification");
+    res.cookie("cookiedExpiry", expiry, {
+        secure: true,
+        httpOnly: true,
+        sameSite: "lax",
+        maxAge: 2 * 60 * 1000
     });
+
+    return res.render("../views/customer/my-account/signup-verification");
 };
 
 async function validateCode(req, res) {
     const { code } = req.body;
-
+    const { cookiedExpriry } = req.cookies;
     const parsedCode = code.join("");
-
-    const validationCodes = await fs.readJson(filePath);
+    const validationCodes = await fs.readJson(cachePath);
 
     const updatedFile = validationCodes.filter(
         entry => entry.code !== parsedCode &&
-        entry.expiry >= Date.now() / 1000
+        entry.expiry >= Math.floor(Date.now() / 1000)
     );
 
-    await fs.writeJson(cachePath, updatedFile, { spaces: 2});
-    
+    const entry = validationCodes.filter(entry =>
+        entry.code == parsedCode);
+
+    if (!validationCodes.map(entry =>
+        entry.code).includes(parsedCode) ||
+        entry.expiry !== cookiedExpriry) {
+            
+        return res.sendStatus(404);
+    };
+
+    await fs.writeJson(cachePath, updatedFile, { spaces: 2 });
+
     return res.json({ message: "Welcome to your new account" });
 };
 

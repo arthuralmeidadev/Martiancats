@@ -1,7 +1,5 @@
 const config = require("../config/database.config");
-
 const database = {};
-
 const Sequelize = require("sequelize");
 const sequelize = new Sequelize(
     config.DB,
@@ -9,11 +7,9 @@ const sequelize = new Sequelize(
     config.PASSWORD,
     {
         logging: 0, // false
-
         host: config.HOST,
         dialect: config.dialect,
         operatorsAliases: 0, // false
-
         pool: {
             max: config.pool.max,
             min: config.pool.min,
@@ -25,7 +21,6 @@ const sequelize = new Sequelize(
 
 database.Sequelize = Sequelize;
 database.sequelize = sequelize;
-
 database.admin = require("./adminUser.model.js")(sequelize, Sequelize);
 database.role = require("./adminRole.model.js")(sequelize, Sequelize);
 
