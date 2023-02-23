@@ -8,10 +8,10 @@ const cachePath = "./cache/emailValidationCodes.json";
 async function sendVerificationEmail(req, res) {
     const { signupIssuer, signupFirstName, signupLastName } = req.body;
 
-    const validationCodes = fs.readJsonSync(cachePath);
+    const validationCodes = await fs.readJson(cachePath);
 
     const code = await generateValidationCode(validationCodes.map(entry => entry.code));
-    
+
     const expiry = Math.floor(Date.now() / 1000) + 120; // 2 minutes from now
 
     const mailOptions = {
@@ -52,7 +52,7 @@ async function validateCode(req, res) {
 
     const parsedCode = code.join("");
 
-    const validationCodes = fs.readJsonSync(filePath);
+    const validationCodes = await fs.readJson(filePath);
 
     const updatedFile = validationCodes.filter(
         entry => entry.code !== parsedCode &&
