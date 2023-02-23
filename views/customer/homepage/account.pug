@@ -3,9 +3,9 @@
         h2 Sign up
         p Create your free martiancat account and gain access to all of our services.
         form(action="/signup" method="POST")
-            input(type="email" placeholder="E-mail" required)
-            input(type="text" placeholder="First name" required)
-            input(type="text" placeholder="Last name" required)
+            input(name="signupIssuer" type="email" placeholder="E-mail" required)
+            input(name="signupFirstName" type="text" placeholder="First name" required)
+            input(name="signupLastName" type="text" placeholder="Last name" required)
             button#w-img-button Create Account
             button Create using Google
                 img(src="/assets/homepage/google-logo.png")

@@ -1,3 +1,15 @@
+@keyframes focusout {
+    to {
+        opacity: 50%;
+    }
+}
+
+@keyframes fadein {
+    to {
+        opacity: 100%;
+    }
+}
+
 body {
     padding-inline: 30%;
 }
@@ -6,6 +18,23 @@ img {
     user-select: none;
     width: 80%;
     margin: 8%;
+
+    animation: focusout 0.3s forwards paused;
+}
+
+.loading {
+    position: absolute;
+    left: 0; 
+    right: 0;
+    top: 0; 
+    bottom: 0; 
+    margin-block: auto; 
+    margin-inline: auto; 
+    width: 70px;
+    opacity: 0%;
+    z-index: 20;
+
+    animation: fadein 0.3s forwards paused;
 }
 
 form {
@@ -18,6 +47,8 @@ form {
     padding-inline: 10%;
     display: block;
     user-select: none;
+
+    animation: focusout 0.3s forwards paused;
 }
 
 form h1 {

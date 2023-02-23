@@ -7,15 +7,16 @@ html
             include ../../../public/styles/customer/my-account/signup-verification.css
     main
         body
-            img(src="/assets/logo/martiancats.svg" alt="logo")
+            img.loading(src="/assets/logo/martiancats_await.gif" alt="martiancats_await")
+            img.logo(src="/assets/logo/martiancats.svg" alt="logo")
             form.form(action="/signup/verify" method="POST")
                 h1 Verify your account
                 p Please insert the verification code we sent to the e-mail address you provided.
                 fieldset
-                    input.code-input(name="code" type="number" step="0" required)
-                    input.code-input(name="code" type="number" step="0" required)
-                    input.code-input(name="code" type="number" step="0" required)
-                    input.code-input(name="code" type="number" step="0" required)
-                    input.code-input(name="code" type="number" step="0" required)
-                    input.code-input(name="code" type="number" step="0" required)
+                    input.code-input(name="code" type="number" required)
+                    input.code-input(name="code" type="number" required)
+                    input.code-input(name="code" type="number" required)
+                    input.code-input(name="code" type="number" required)
+                    input.code-input(name="code" type="number" required)
+                    input.code-input(name="code" type="number" required)
             script(src="/scripts/customer/signup-verification.js")

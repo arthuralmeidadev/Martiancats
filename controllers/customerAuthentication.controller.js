@@ -1,44 +1,77 @@
+const fs = require("fs-extra");
 const nodemailer = require("nodemailer");
-const googleAuthenticationData = require("../data/googleAuthenticationData.json");
+const gmailCredentials = require("../data/gmailCredentials.json");
+const generateValidationCode = require("../helpers/generateValidationCode");
 
 async function sendVerificationEmail(req, res) {
-    const transporter = nodemailer.createTransport({
-        service: "gmail",
-        auth: {
-            type: "OAuth2",
-            user: "arthuralmeida.office.dev@gmail.com",
-            pass: "Art19-Gvt11",
-            clientId: googleAuthenticationData.clientId,
-            clientSecret: googleAuthenticationData.clientSecret,
-            refreshToken: googleAuthenticationData.refresh_token
-        }
-    });
-
-    const mailOptions = {
-        from: "arthuralmeida.office.dev@gmail.com",
-        to: "meupanda374@gmail.com",
-        subject: "Nodemailer Project",
-        text: "Hi from your nodemailer project",
-        priority: "high"
-    };
-
-    /*transporter.sendMail(mailOptions, (err, data) => {
-        if (err) {
-          console.log("Error " + err);
-        } else {
-          console.log("Email sent successfully");
-        };
-    });*/
+    const { signupIssuer, signupFirstName, signupLastName } = req.body;
     
-    return res.render("../views/customer/my-account/signup-verification");
+    const filePath = "./cache/emailValidationCodes.json";
+    const validationCodes = fs.readJsonSync(filePath);
+    const code = await generateValidationCode(validationCodes.map(entry => entry.code));
+    const expiry = Math.floor(Date.now() / 1000) + 120; // 2 minutes from now
+
+    validationCodes.push({ code: code, expiry: expiry });
+
+    fs.writeJson(filePath, validationCodes, (err) => {
+        if (err) {
+            return res.sendStatus(500);
+        };
+
+        const mailOptions = {
+            from: gmailCredentials.provider,
+            to: signupIssuer,
+            subject: "Verification Code - Martiancats Accounts",
+            text: `Hello ${signupFirstName} ${signupLastName} This is your verification code: ${code}`,
+            priority: "high"
+        };
+
+        const transporter = nodemailer.createTransport({
+            service: "gmail",
+            auth: {
+                type: "OAuth2",
+                user: gmailCredentials.provider,
+                pass: gmailCredentials.secret,
+                clientId: gmailCredentials.clientId,
+                clientSecret: gmailCredentials.clientSecret,
+                refreshToken: gmailCredentials.refresh_token
+            }
+        });
+
+        transporter.sendMail(mailOptions, (err, email) => {
+            if (err) {
+                return res.sendStatus(500);
+            };
+
+            return res.render("../views/customer/my-account/signup-verification");
+        });
+    });
 };
 
-async function verifyCode(req, res) {
+async function validateCode(req, res) {
     const { code } = req.body;
-    return res.send(code)
+
+    const parsedCode = code.join("");
+
+    const filePath = "./cache/emailValidationCodes.json";
+
+    const validationCodes = fs.readJsonSync(filePath);
+    
+    const updatedFile = validationCodes.filter(
+        entry => entry.code !== parsedCode &&
+        entry.expiry >= Date.now() / 1000
+    );
+
+    fs.writeJson("./cache/emailValidationCodes.json", updatedFile, (err) => {
+        if (err) {
+            return res.sendStatus(500);
+        };
+
+        return res.json({ message: "Welcome to your new account" });
+    });
 };
 
 module.exports = {
     sendVerificationEmail,
-    verifyCode
+    validateCode
 };

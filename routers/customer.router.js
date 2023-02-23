@@ -10,7 +10,7 @@ router.get("/", homeController.viewAll);
 // needs a middleware to prevent duplicates
 router.post("/signup", customerAuthenticationController.sendVerificationEmail);
 
-router.post("/signup/verify", customerAuthenticationController.verifyCode);
+router.post("/signup/verify", customerAuthenticationController.validateCode);
 
 router.get("/admin-login", adminAuthenticationController.loadAdminLoginPage);
 

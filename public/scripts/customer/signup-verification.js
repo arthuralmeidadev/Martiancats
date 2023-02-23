@@ -1,5 +1,7 @@
 const inputElements = [...document.querySelectorAll(".code-input")];
 const form = document.querySelector(".form");
+const loading = document.querySelector(".loading");
+const logo = document.querySelector(".logo");
 
 inputElements.forEach((ele, index) => {
     ele.addEventListener("keydown", (e) => {
@@ -31,6 +33,11 @@ function allFIlled() {
         };
     });
     if (filled == 6) {
-        form.submit()
+        logo.style.animationPlayState = "running";
+        form.style.animationPlayState = "running";
+        loading.style.animationPlayState = "running";
+        inputElements[5].focus();
+        inputElements[5].blur();
+        form.submit();
     };
 };
