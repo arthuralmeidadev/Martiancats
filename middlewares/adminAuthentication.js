@@ -1,12 +1,13 @@
 const jwt = require('jsonwebtoken');
 const payloadEncrypter = require("../helpers/payloadEncrypter");
-const accessTokenKey = require('../data/jwtSignatureKeys.json')[0];
+const { accessTokenKey } = require('../config/jwt.config.js');
 
 async function adminAuthenticationMiddleware (req, res, next) {
-    if (!req.cookies.accessToken) {
+    const { accessToken } = req.cookies;
+    if (!accessToken) {
         return res.status(401).send("No access token found");
     };
-    const decoded = jwt.verify(req.cookies.accessToken, accessTokenKey);
+    const decoded = jwt.verify(accessToken, accessTokenKey);
     res.locals.isOperator = payloadEncrypter.decrypt(decoded).role === "operator";
 
     next();
