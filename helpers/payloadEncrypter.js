@@ -1,9 +1,9 @@
 const crypto = require("crypto");
-const encryptionKeys = require("../data/payloadEncryptionKeys.json");
+const { keyString, initVectorString } = require("../config/encryption.config");
 
 function encrypt(object) {
-    const key = Buffer.from(encryptionKeys[0], "hex");
-    const initVector = Buffer.from(encryptionKeys[1], "hex");
+    const key = Buffer.from(keyString, "hex");
+    const initVector = Buffer.from(initVectorString, "hex");
 
     const cipher = crypto.createCipheriv("aes-256-cbc", key, initVector);
     let encrypted = cipher.update(JSON.stringify(object), "utf-8", "hex");
