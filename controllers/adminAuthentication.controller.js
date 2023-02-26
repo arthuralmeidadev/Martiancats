@@ -1,9 +1,9 @@
 const jwt = require("jsonwebtoken");
 const payloadEncrypter = require("../helpers/payloadEncrypter");
 const adminManagement = require("../helpers/adminManagement");
-const cookieOptions = require("../config/cookieOptions.config.js");
-const refreshTokenClaims = require("../config/refreshToken.config.js");
-const { accessTokenKey, refreshTokenKey } = require("../config/jwt.config.js");
+const cookieOptions = require("../config/cookie.config");
+const refreshTokenClaims = require("../config/refreshToken.config");
+const { accessTokenKey, refreshTokenKey } = require("../config/jwt.config");
 
 async function loadAdminLoginPage(req, res) {
     return res.status(200).render("../views/admin/login");
@@ -36,15 +36,12 @@ async function grabAdminTokens(req, res) {
 
 async function resetAdminAccessToken(req, res) {
     const { refreshToken } = req.cookies;
-    if (!refreshToken) {
-        res.clearCookie("accessToken");
-        return res.sendStatus(401);
-    };
     const decoded = jwt.verify(refreshToken, refreshTokenKey);
     const admin = await adminManagement.fetchAdmin(decoded.userid);
     const roles = await adminManagement.getAdminRoles(admin);
 
-    if (!admin) {
+    if (!admin || !refreshToken) {
+        res.clearCookie("accessToken");
         return res.sendStatus(401);
     };
     const payload = payloadEncrypter.encrypt({
