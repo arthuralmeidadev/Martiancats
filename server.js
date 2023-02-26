@@ -1,4 +1,4 @@
-const fs = require("fs");
+const fs = require("fs-extra");
 const https = require("https");
 const privateKey = fs.readFileSync("config/sslcert/key.pem", "utf8");
 const certificate = fs.readFileSync("config/sslcert/server.crt", "utf8");
