@@ -1,7 +1,7 @@
 const fs = require("fs");
 const https = require("https");
-const privateKey = fs.readFileSync("sslcert/key.pem", "utf8");
-const certificate = fs.readFileSync("sslcert/server.crt", "utf8");
+const privateKey = fs.readFileSync("config/sslcert/key.pem", "utf8");
+const certificate = fs.readFileSync("config/sslcert/server.crt", "utf8");
 
 // custom credentials - dev env only
 const credentials = { key: privateKey, cert: certificate };
