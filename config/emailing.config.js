@@ -1,12 +1,12 @@
 const nodemailer = require("nodemailer");
-const gmailCredentials = require("../data/gmailCredentials.json");
+const gmailCredentials = require("./gmail.config.js");
 
 const transporter = nodemailer.createTransport({
     service: "gmail",
     auth: {
         type: "OAuth2",
         user: gmailCredentials.provider,
-        pass: gmailCredentials.secret,
+        pass: gmailCredentials.provider_secret,
         clientId: gmailCredentials.clientId,
         clientSecret: gmailCredentials.clientSecret,
         refreshToken: gmailCredentials.refresh_token
