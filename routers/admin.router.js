@@ -1,15 +1,15 @@
 const express = require("express");
 const router = express.Router();
 
-const adminController = require("../controllers/admin.controller");
-const adminAuthenticationController = require("../controllers/adminAuthentication.controller");
+const admin = require("../controllers/admin.controller");
+const adminAuthentication = require("../controllers/adminAuthentication.controller");
 const adminAuthenticationMiddleware = require("../middlewares/adminAuthentication");
 const operatorAuthenticationMiddleware = require("../middlewares/operatorAuthentication");
 
-router.get("/refresh", adminAuthenticationController.resetAdminAccessToken);
+router.get("/refresh", adminAuthentication.resetAdminAccessToken);
 
-router.get("/", adminAuthenticationMiddleware, adminController.dashboard);
+router.get("/", adminAuthenticationMiddleware, admin.viewDashboard);
 
-router.get("/op", [adminAuthenticationMiddleware, operatorAuthenticationMiddleware], adminController.operatorDashboard);
+router.get("/op", [adminAuthenticationMiddleware, operatorAuthenticationMiddleware], admin.viewOperatorDashboard);
 
 module.exports = router;
