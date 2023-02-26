@@ -1,6 +1,6 @@
 const transporter = require("../config/emailing.config");
 const emailing = require("../helpers/emailing");
-const cookieOptions = require("../config/cookie.config")
+const cookieOptions = require("../config/expiryCookie.config")
 
 async function sendVerificationEmail(req, res) {
     const { signupIssuer, signupFirstName, signupLastName } = req.body;
