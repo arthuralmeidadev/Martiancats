@@ -1,19 +1,24 @@
 const express = require("express");
 const router = express.Router();
 
-const homeController = require("../controllers/home.controller");
-const customerAuthenticationController = require("../controllers/customerAuthentication.controller");
-const adminAuthenticationController = require("../controllers/adminAuthentication.controller");
+const customer = require("../controllers/customer.controller");
+const customerAuthentication = require("../controllers/customerAuthentication.controller");
+const adminAuthentication = require("../controllers/adminAuthentication.controller");
+const customerRegistrationMiddleware = require("../middlewares/customerRegistration");
+const customerAuthenticationMiddleware = require("../middlewares/customerAuthentication");
 
-router.get("/", homeController.viewAll);
+router.get("/", customer.viewAll);
 
-// needs a middleware to prevent duplicates
-router.post("/signup", customerAuthenticationController.sendVerificationEmail);
+router.post("/signup", customerRegistrationMiddleware, customerAuthentication.sendVerificationEmail);
 
-router.post("/signup/verify", customerAuthenticationController.validateCode);
+router.post("/signup/verify", customerAuthentication.validateCode);
 
-router.get("/admin-login", adminAuthenticationController.loadAdminLoginPage);
+router.post("/my-account", customerAuthenticationMiddleware, customer.viewAccount);
 
-router.post("/admin-login", adminAuthenticationController.grabAdminTokens);
+router.post("/my-projects", customerAuthenticationMiddleware, customer.viewProjects);
+
+router.get("/admin-login", adminAuthentication.loadAdminLoginPage);
+
+router.post("/admin-login", adminAuthentication.grabAdminTokens);
 
 module.exports = router;
