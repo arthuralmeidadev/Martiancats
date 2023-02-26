@@ -7,8 +7,8 @@ async function adminAuthenticationMiddleware(req, res, next) {
         return res.status(401);
     };
     const decoded = await tokenizer.verifyAccessToken(accessToken);
-    const decrypted = await encrypter.decrypt(decoded);
-    res.locals.isOperator = decrypted.role === "operator";
+    const payload = await encrypter.decrypt(decoded);
+    res.locals.isOperator = payload.role === "operator";
 
     next();
 };
