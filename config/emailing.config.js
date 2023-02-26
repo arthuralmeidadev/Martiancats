@@ -5,11 +5,11 @@ const transporter = nodemailer.createTransport({
     service: "gmail",
     auth: {
         type: "OAuth2",
-        user: gmailCredentials.provider,
-        pass: gmailCredentials.provider_secret,
-        clientId: gmailCredentials.clientId,
-        clientSecret: gmailCredentials.clientSecret,
-        refreshToken: gmailCredentials.refresh_token
+        user: gmailCredentials.PROVIDER,
+        pass: gmailCredentials.PROVIDER_SECRET,
+        clientId: gmailCredentials.CLIENT_ID,
+        clientSecret: gmailCredentials.CLIENT_SECRET,
+        refreshToken: gmailCredentials.REFRESH_TOKEN
     }
 });
 
