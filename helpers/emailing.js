@@ -1,6 +1,6 @@
 const fs = require("fs-extra");
 const cachePath = "./cache/emailValidationCodes.json";
-const gmailCredentials = require("../data/gmailCredentials.json");
+const gmailCredentials = require("../config/gmail.config");
 const validationCodes = await fs.readJson(cachePath);
 const codesArray = validationCodes.map(entry => entry.code);
 
