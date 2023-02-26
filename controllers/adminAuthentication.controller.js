@@ -1,9 +1,7 @@
-const jwt = require("jsonwebtoken");
-const payloadEncrypter = require("../helpers/payloadEncrypter");
+const encrypter = require("../helpers/encrypter");
+const tokenizer = require("../helpers/tokenizer");
 const adminManagement = require("../helpers/adminManagement");
-const cookieOptions = require("../config/cookie.config");
-const refreshTokenClaims = require("../config/refreshToken.config");
-const { accessTokenKey, refreshTokenKey } = require("../config/jwt.config");
+const cookieOptions = require("../config/tokenCookie.config");
 
 async function loadAdminLoginPage(req, res) {
     return res.status(200).render("../views/admin/login");
@@ -18,17 +16,15 @@ async function grabAdminTokens(req, res) {
     if (!admin || !isValidAdmin) {
         return res.sendStatus(401);
     };
-    const payload = payloadEncrypter.encrypt({
+    const payload = await encrypter.encrypt({
         userid: userid,
         birthdate: birthdate,
         secret: secret,
         role: roles[0].name
     });
-    const accessToken = jwt.sign(payload, accessTokenKey, { expiresIn: "3m" });
-    const refreshToken = jwt.sign({ userid: userid }, refreshTokenKey, refreshTokenClaims);
-    
+    const accessToken = await tokenizer.newAccessToken(payload);
+    const refreshToken = await tokenizer.newRefreshToken(userid);
     res.cookie("accessToken", accessToken, cookieOptions);
-
     res.cookie("refreshToken", refreshToken, cookieOptions);
     
     return res.status(200).redirect("/admin");
@@ -36,7 +32,7 @@ async function grabAdminTokens(req, res) {
 
 async function resetAdminAccessToken(req, res) {
     const { refreshToken } = req.cookies;
-    const decoded = jwt.verify(refreshToken, refreshTokenKey);
+    const decoded = await tokenizer.verifyRefreshToken(refreshToken);
     const admin = await adminManagement.fetchAdmin(decoded.userid);
     const roles = await adminManagement.getAdminRoles(admin);
 
@@ -44,16 +40,14 @@ async function resetAdminAccessToken(req, res) {
         res.clearCookie("accessToken");
         return res.sendStatus(401);
     };
-    const payload = payloadEncrypter.encrypt({
+    const payload = await payloadEncrypter.encrypt({
         userid: admin.userid,
         birthdate: admin.birthdate,
         secret: admin.secret,
         role: roles[0].name
     });
-    const accessToken = jwt.sign(payload, accessTokenKey, { expiresIn: "3m" });
-
+    const accessToken = await tokenizer.newAccessToken(payload);
     res.clearCookie("accessToken");
-
     res.cookie("accessToken", accessToken, cookieOptions);
 
     return res.redirect(req.query.path);
