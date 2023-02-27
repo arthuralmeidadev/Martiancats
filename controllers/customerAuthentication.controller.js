@@ -1,6 +1,7 @@
 const transporter = require("../config/emailing.config");
 const emailing = require("../helpers/emailing");
-const cookieOptions = require("../config/expiryCookie.config")
+const customerManagement = require("../helpers/customerManagament");
+const cookieOptions = require("../config/expiryCookie.config");
 
 async function sendVerificationEmail(req, res) {
     const { signupIssuer, signupFirstName, signupLastName } = req.body;
@@ -9,7 +10,7 @@ async function sendVerificationEmail(req, res) {
     const expiry = await emailing.getExpiry();
     const mailOptions = await emailing.createMail(signupIssuer, customerName, code);
 
-    await emailing.saveValidationCode(code, expiry);
+    await emailing.saveValidationCode(code, expiry, signupIssuer, customerName);
 
     try {
         transporter.sendMail(mailOptions);
@@ -29,9 +30,17 @@ async function validateCode(req, res) {
     const entry = await emailing.getCodeEntry(parsedCode);
     const updatedFile = await emailing.deleteValidationCode(parsedCode);
     const isValidEntry = await emailing.isValidEntry(entry, cookiedExpiry);
+    const email = entry.email;
+    const rep = entry.rep;
 
     if (!isValidEntry) {
         return res.sendStatus(404);
+    };
+
+    try {
+        await customerManagement.createCustomer(email, rep);
+    } catch (err) {
+        return res.sendStatus(422);
     };
 
     await emailing.updateCache(updatedFile);

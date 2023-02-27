@@ -23,6 +23,7 @@ database.Sequelize = Sequelize;
 database.sequelize = sequelize;
 database.admin = require("./adminUser.model.js")(sequelize, Sequelize);
 database.role = require("./adminRole.model.js")(sequelize, Sequelize);
+database.customer = require("./customer.model.js")(sequelize, Sequelize);
 
 database.role.belongsToMany(database.admin, {
     through: "admin_roles",
