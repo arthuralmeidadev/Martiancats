@@ -3,7 +3,7 @@ const Admin = database.admin;
 
 async function fetchAdmin(id) {
     try {
-        return Admin.findOne({ where: { id: id } });
+        return await Admin.findOne({ where: { id: id } });
     } catch (err) {
         return null;
     };
@@ -11,7 +11,7 @@ async function fetchAdmin(id) {
 
 async function getAdminRoles(admin) {
     try {
-        admin.getRoles();
+        return await admin.getRoles();
     } catch (err) {
         return null;
     };
