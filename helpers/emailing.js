@@ -34,8 +34,13 @@ async function getExpiry() {
     return Math.floor(Date.now() / 1000) + 120;
 };
 
-async function saveValidationCode(code, expiry) {
-    validationCodes.push({ code: code, expiry: expiry });
+async function saveValidationCode(code, expiry, customerEmail, customerName) {
+    validationCodes.push({
+        code: code,
+        expiry: expiry,
+        customerEmail: customerEmail,
+        customerName: customerName
+    });
     await fs.writeJson(cachePath, validationCodes, { spaces: 2 });
 };
 
