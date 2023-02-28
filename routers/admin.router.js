@@ -6,10 +6,8 @@ const adminAuthentication = require("../controllers/adminAuthentication.controll
 const adminAuthenticationMiddleware = require("../middlewares/adminAuthentication");
 const operatorAuthenticationMiddleware = require("../middlewares/operatorAuthentication");
 
-router.get("/refresh", adminAuthentication.resetAdminAccessToken);
-
+router.get("/refresh", adminAuthentication.resetAccessToken);
 router.get("/", adminAuthenticationMiddleware, admin.viewDashboard);
-
 router.get("/op", [adminAuthenticationMiddleware, operatorAuthenticationMiddleware], admin.viewOperatorDashboard);
 
 module.exports = router;
