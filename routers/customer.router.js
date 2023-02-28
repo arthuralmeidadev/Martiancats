@@ -8,17 +8,13 @@ const customerRegistrationMiddleware = require("../middlewares/customerRegistrat
 const customerAuthenticationMiddleware = require("../middlewares/customerAuthentication");
 
 router.get("/", customer.viewAll);
-
 router.post("/signup", customerRegistrationMiddleware, customerAuthentication.sendVerificationEmail);
-
 router.post("/signup/verify", customerAuthentication.validateCode);
-
+router.post("/login", customerAuthentication.grabTokens);
+router.post("/refresh", customerAuthentication.resetAccessToken);
 router.post("/my-account", customerAuthenticationMiddleware, customer.viewAccount);
-
 router.post("/my-projects", customerAuthenticationMiddleware, customer.viewProjects);
-
 router.get("/admin-login", adminAuthentication.loadAdminLoginPage);
-
-router.post("/admin-login", adminAuthentication.grabAdminTokens);
+router.post("/admin-login", adminAuthentication.grabTokens);
 
 module.exports = router;
