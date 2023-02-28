@@ -16,7 +16,7 @@ async function createCustomer(email, rep) {
 
 async function isRegisteredCustomer(email) {
     try {
-        const customer = await Customer.findOne({ where: { email: email } });
+        const customer = Customer.findOne({ where: { email: email } });
         if (customer) {
             return true;
         } else {
@@ -27,7 +27,22 @@ async function isRegisteredCustomer(email) {
     };
 };
 
+async function fetchCustomer(email) {
+    try {
+        return Customer.findOne({ where: { email: email } });
+    } catch {
+        return null;
+    };
+};
+
+async function isValidCustomer(customer, secret) {
+    const isValidCustomer = customer.secret === secret;
+    return isValidCustomer;
+};
+
 module.exports = {
     createCustomer,
-    isRegisteredCustomer
+    isRegisteredCustomer,
+    fetchCustomer,
+    isValidCustomer
 };
