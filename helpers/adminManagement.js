@@ -3,15 +3,15 @@ const Admin = database.admin;
 
 async function fetchAdmin(id) {
     try {
-        return await Admin.findOne({ where: { id: id } });
+        return Admin.findOne({ where: { id: id } });
     } catch (err) {
         return null;
     };
 };
 
-async function getAdminRoles(admin) {
+async function getRoles(admin) {
     try {
-        return await admin.getRoles();
+        return admin.getRoles();
     } catch (err) {
         return null;
     };
@@ -23,6 +23,6 @@ async function isValidAdmin(admin, birthdate, secret) {
 };
 module.exports = {
     fetchAdmin,
-    getAdminRoles,
+    getRoles,
     isValidAdmin
 };
