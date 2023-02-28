@@ -7,46 +7,48 @@ async function loadAdminLoginPage(req, res) {
     return res.status(200).render("../views/admin/login");
 };
 
-async function grabAdminTokens(req, res) {
+async function grabTokens(req, res) {
     const { userid, birthdate, secret } = req.body;
     const admin = await adminManagement.fetchAdmin(userid);
-    const roles = await adminManagement.getAdminRoles(admin);       
-    const isValidAdmin = await adminManagement.isValidAdmin(admin);
+    const roles = await adminManagement.getRoles(admin);       
+    const isValidAdmin = await adminManagement.isValidAdmin(admin, birthdate, secret);
 
     if (!admin || !isValidAdmin) {
         return res.sendStatus(401);
     };
-    const payload = await encrypter.encrypt({
+    const accessTokenPayload = await encrypter.encrypt({
         userid: userid,
         birthdate: birthdate,
         secret: secret,
         role: roles[0].name
     });
-    const accessToken = await tokenizer.newAccessToken(payload);
-    const refreshToken = await tokenizer.newRefreshToken(userid);
+    const accessToken = await tokenizer.newAccessToken(accessTokenPayload);
+    const refreshTokenPayload = await encrypter.encrypt({ userid: userid });
+    const refreshToken = await tokenizer.newRefreshToken(refreshTokenPayload);
     res.cookie("accessToken", accessToken, cookieOptions);
     res.cookie("refreshToken", refreshToken, cookieOptions);
     
     return res.status(200).redirect("/admin");
 };
 
-async function resetAdminAccessToken(req, res) {
+async function resetAccessToken(req, res) {
     const { refreshToken } = req.cookies;
     const decoded = await tokenizer.verifyRefreshToken(refreshToken);
-    const admin = await adminManagement.fetchAdmin(decoded.userid);
-    const roles = await adminManagement.getAdminRoles(admin);
+    const refreshTokenPayload = await encrypter.decrypt(decoded);
+    const admin = await adminManagement.fetchAdmin(refreshTokenPayload.userid);
+    const roles = await adminManagement.getRoles(admin);
 
     if (!admin || !refreshToken) {
         res.clearCookie("accessToken");
         return res.sendStatus(401);
     };
-    const payload = await payloadEncrypter.encrypt({
+    const accessTokenPayload = await encrypter.encrypt({
         userid: admin.userid,
         birthdate: admin.birthdate,
         secret: admin.secret,
         role: roles[0].name
     });
-    const accessToken = await tokenizer.newAccessToken(payload);
+    const accessToken = await tokenizer.newAccessToken(accessTokenPayload);
     res.clearCookie("accessToken");
     res.cookie("accessToken", accessToken, cookieOptions);
 
@@ -55,6 +57,6 @@ async function resetAdminAccessToken(req, res) {
 
 module.exports = {
     loadAdminLoginPage,
-    grabAdminTokens,
-    resetAdminAccessToken,
+    grabTokens,
+    resetAccessToken,
 };
