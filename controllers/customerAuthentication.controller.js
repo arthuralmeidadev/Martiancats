@@ -4,6 +4,7 @@ const encrypter = require("../helpers/encrypter");
 const tokenizer = require("../helpers/tokenizer");
 const customerManagement = require("../helpers/customerManagament");
 const cookieOptions = require("../config/expiryCookie.config");
+const tokenCookieOptions = require("../config/tokenCookie.config");
 
 async function sendVerificationEmail(req, res) {
     const { signupIssuer, signupFirstName, signupLastName } = req.body;
@@ -42,7 +43,7 @@ async function validateCode(req, res) {
     try {
         await customerManagement.createCustomer(email, rep);
     } catch (err) {
-        return res.sendStatus(422);
+        return res.sendStatus(500);
     };
 
     await emailing.updateCache(updatedFile);
@@ -67,8 +68,8 @@ async function grabTokens(req, res) {
     const refreshTokenPayload = await encrypter.encrypt({ email: email });
     const accessToken = await tokenizer.newAccessToken(accessTokenPayload);
     const refreshToken = await tokenizer.newRefreshToken(refreshTokenPayload);
-    res.cookie("accessToken", accessToken, cookieOptions);
-    res.cookie("refreshToken", refreshToken, cookieOptions);
+    res.cookie("accessToken", accessToken, tokenCookieOptions);
+    res.cookie("refreshToken", refreshToken, tokenCookieOptions);
     
     return res.status(200).redirect("/my-account");
 };
@@ -89,7 +90,7 @@ async function resetAccessToken(req, res) {
     });
     const accessToken = await tokenizer.newAccessToken(accessTokenPayload);
     res.clearCookie("accessToken");
-    res.cookie("accessToken", accessToken, cookieOptions);
+    res.cookie("accessToken", accessToken, tokenCookieOptions);
 
     return res.redirect(req.query.path);
 };
