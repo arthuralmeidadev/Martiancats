@@ -33,12 +33,11 @@ async function validateCode(req, res) {
     const entry = await emailing.getCodeEntry(parsedCode);
     const updatedFile = await emailing.deleteValidationCode(parsedCode);
     const isValidEntry = await emailing.isValidEntry(entry, cookiedExpiry);
-    const email = entry.email;
-    const rep = entry.rep;
+    const email = entry?.email;
+    const rep = entry?.rep;
 
-    if (!isValidEntry) {
+    if (!isValidEntry)
         return res.sendStatus(404);
-    };
 
     try {
         await customerManagement.createCustomer(email, rep);
@@ -58,9 +57,9 @@ async function grabTokens(req, res) {
     const customer = await customerManagement.fetchCustomer(email);
     const isValidCustomer = await customerManagement.isValidCustomer(customer, password);
 
-    if (!customer || !isValidCustomer) {
+    if (!customer || !isValidCustomer)
         return res.sendStatus(401);
-    };
+
     const accessTokenPayload = await encrypter.encrypt({
         email: email,
         password: password,
@@ -78,15 +77,15 @@ async function resetAccessToken(req, res) {
     const { refreshToken } = req.cookies;
     const decoded = await tokenizer.verifyRefreshToken(refreshToken);
     const refreshTokenPayload = await encrypter.decrypt(decoded);
-    const customer = await customerManagement.fetchCustomer(refreshTokenPayload.email);
+    const customer = await customerManagement.fetchCustomer(refreshTokenPayload?.email);
 
     if (!customer || !refreshToken) {
         res.clearCookie("accessToken");
         return res.sendStatus(401);
     };
     const accessTokenPayload = await encrypter.encrypt({
-        userid: customer.email,
-        birthdate: customer.password
+        userid: customer?.email,
+        birthdate: customer?.password
     });
     const accessToken = await tokenizer.newAccessToken(accessTokenPayload);
     res.clearCookie("accessToken");

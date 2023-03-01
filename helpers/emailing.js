@@ -23,11 +23,10 @@ async function createMail(destiny, name, code) {
 async function generateCode() {
     const code = `${__random()}${__random()}${__random()}${__random()}${__random()}${__random()}`;
     
-    if (codesArray.includes(code)) {
+    if (codesArray.includes(code))
         generateCode();
-    } else {
-        return code;
-    };
+        
+    return code;
 };
 
 async function getExpiry() {

@@ -6,7 +6,7 @@ async function createCustomer(email, rep) {
         Customer.create({
             email: email,
             secret: placeHolder,
-            rep: rep,
+            rep: rep ?? "unspescified",
             accountOptions: {}
         });
     } catch (err) {
@@ -17,11 +17,10 @@ async function createCustomer(email, rep) {
 async function isRegisteredCustomer(email) {
     try {
         const customer = Customer.findOne({ where: { email: email } });
-        if (customer) {
+        if (customer)
             return true;
-        } else {
-            return false;
-        };
+
+        return false;
     } catch (err) {
         return null;
     };
@@ -30,14 +29,13 @@ async function isRegisteredCustomer(email) {
 async function fetchCustomer(email) {
     try {
         return Customer.findOne({ where: { email: email } });
-    } catch {
+    } catch (err) {
         return null;
     };
 };
 
 async function isValidCustomer(customer, secret) {
-    const isValidCustomer = customer.secret === secret;
-    return isValidCustomer;
+    return customer.secret === secret;
 };
 
 module.exports = {

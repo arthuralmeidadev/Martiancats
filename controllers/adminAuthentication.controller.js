@@ -13,14 +13,14 @@ async function grabTokens(req, res) {
     const roles = await adminManagement.getRoles(admin);       
     const isValidAdmin = await adminManagement.isValidAdmin(admin, birthdate, secret);
 
-    if (!admin || !isValidAdmin) {
+    if (!admin || !isValidAdmin)
         return res.sendStatus(401);
-    };
+
     const accessTokenPayload = await encrypter.encrypt({
         userid: userid,
         birthdate: birthdate,
         secret: secret,
-        role: roles[0].name
+        role: roles[0]?.name
     });
     const accessToken = await tokenizer.newAccessToken(accessTokenPayload);
     const refreshTokenPayload = await encrypter.encrypt({ userid: userid });
@@ -35,7 +35,7 @@ async function resetAccessToken(req, res) {
     const { refreshToken } = req.cookies;
     const decoded = await tokenizer.verifyRefreshToken(refreshToken);
     const refreshTokenPayload = await encrypter.decrypt(decoded);
-    const admin = await adminManagement.fetchAdmin(refreshTokenPayload.userid);
+    const admin = await adminManagement.fetchAdmin(refreshTokenPayload?.userid);
     const roles = await adminManagement.getRoles(admin);
 
     if (!admin || !refreshToken) {
@@ -43,10 +43,10 @@ async function resetAccessToken(req, res) {
         return res.sendStatus(401);
     };
     const accessTokenPayload = await encrypter.encrypt({
-        userid: admin.userid,
-        birthdate: admin.birthdate,
-        secret: admin.secret,
-        role: roles[0].name
+        userid: admin?.userid,
+        birthdate: admin?.birthdate,
+        secret: admin?.secret,
+        role: roles[0]?.name
     });
     const accessToken = await tokenizer.newAccessToken(accessTokenPayload);
     res.clearCookie("accessToken");
