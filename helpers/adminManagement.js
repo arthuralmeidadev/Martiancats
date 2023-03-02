@@ -1,28 +1,36 @@
 const database = require("../models/initialization");
 const Admin = database.admin;
+const errors = require("../config/errors.config");
 
 async function fetchAdmin(id) {
     try {
-        return Admin.findOne({ where: { id: id } });
+        return await Admin.findOne({ where: { id: id } });
     } catch (err) {
-        return null;
+        throw errors.Unauthorized;
     };
 };
 
-async function getRoles(admin) {
+async function getRole(id) {
     try {
-        return admin.getRoles();
+        const admin = await Admin.findOne({ where: { id: id } });
+        const roles = await admin.getRoles();
+        return roles[0]?.name;
     } catch (err) {
         return null;
     };
 };
 
-async function isValidAdmin(admin, birthdate, secret) {
-    const isValidAdmin = admin.birthdate === birthdate && admin.secret === secret;
-    return isValidAdmin;
+async function isValidAdmin(id, birthdate, secret) {
+    try {
+        const admin = await Admin.findOne({ where: { id: id } });
+        return admin?.birthdate === birthdate && admin?.secret === secret;
+    } catch (err) {
+        return false;
+    };
+    
 };
 module.exports = {
     fetchAdmin,
-    getRoles,
+    getRole,
     isValidAdmin
 };

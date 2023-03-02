@@ -1,18 +1,19 @@
 const tokenizer = require("../helpers/tokenizer");
+const errors = require("../config/errors.config");
 
 async function customerAuthenticationMiddleware (req, res, next) {
-    const { accessToken } = req.cookies;
-    if (!accessToken) {
-        return res.status(401);
-    } else {
-        try {
-            await tokenizer.verifyAccessToken(accessToken);
-        } catch (err) {
-            return res.redirect("/refresh")
-        };
-    };
+    try {
+        const { accessToken } = req.cookies;
 
-    next();
+        if (!accessToken)
+           throw errors.Forbidden;
+
+        await tokenizer.verifyAccessToken(accessToken);
+
+        next();
+    } catch (err) {
+         return res.redirect("/refresh");
+    };
 };
 
 module.exports = customerAuthenticationMiddleware;

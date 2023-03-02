@@ -1,97 +1,102 @@
-const transporter = require("../config/emailing.config");
 const emailing = require("../helpers/emailing");
 const encrypter = require("../helpers/encrypter");
 const tokenizer = require("../helpers/tokenizer");
 const customerManagement = require("../helpers/customerManagament");
 const cookieOptions = require("../config/expiryCookie.config");
 const tokenCookieOptions = require("../config/tokenCookie.config");
+const errors = require("../config/errors.config");
 
-async function sendVerificationEmail(req, res) {
-    const { signupIssuer, signupFirstName, signupLastName } = req.body;
-    const customerName = { first: signupFirstName, last: signupLastName };
-    const code = await emailing.generateCode();
-    const expiry = await emailing.getExpiry();
-    const mailOptions = await emailing.createMail(signupIssuer, customerName, code);
-
-    await emailing.saveValidationCode(code, expiry, signupIssuer, customerName);
-
+async function sendVerificationEmail(req, res, next) {
     try {
-        transporter.sendMail(mailOptions);
+        const { signupIssuer, signupFirstName, signupLastName } = req.body;
+        const fullName = { first: signupFirstName, last: signupLastName };
+        const code = await emailing.generateCode();
+        const expiry = await emailing.getExpiry();
+        const mailOptions = await emailing.createMail(signupIssuer, fullName, code);
+
+        await emailing.saveValidationCode(code, expiry, signupIssuer, fullName);
+        await emailing.sendVerificationEmail(mailOptions);
         res.cookie("cookiedExpiry", expiry, cookieOptions);
-    } catch (err) {
-        console.log(err.message);
-        return res.sendStatus(500);
-    };
 
-    return res.render("../views/customer/my-account/signup-verification");
+        return res.render("../views/customer/my-account/signup-verification");
+
+    } catch (err) {
+        next(err);
+    };
 };
 
-async function validateCode(req, res) {
-    const { code } = req.body;
-    const { cookiedExpiry } = req.cookies;
-    const parsedCode = code.join("");
-    const entry = await emailing.getCodeEntry(parsedCode);
-    const updatedFile = await emailing.deleteValidationCode(parsedCode);
-    const isValidEntry = await emailing.isValidEntry(entry, cookiedExpiry);
-    const email = entry?.email;
-    const rep = entry?.rep;
-
-    if (!isValidEntry)
-        return res.sendStatus(404);
-
+async function validateCode(req, res, next) {
     try {
-        await customerManagement.createCustomer(email, rep);
+        const { code } = req.body;
+        const { cookiedExpiry } = req.cookies;
+        const parsedCode = code.join("");
+        const isValidEntry = await emailing.isValidEntry(parsedCode, cookiedExpiry);
+
+        if (!isValidEntry) 
+            throw errors.ICVC;
+
+        const entry = await emailing.getCodeEntry(parsedCode);
+        const updatedFile = await emailing.deleteValidationCode(parsedCode);
+
+        await customerManagement.createCustomer(entry.email, entry.rep);
+        await emailing.updateCache(updatedFile);
+        res.clearCookie("cookiedExpiry");
+
+        return res.json({ message: "Welcome to your new account" });
+
     } catch (err) {
-        return res.sendStatus(500);
+        next(err);
     };
-
-    await emailing.updateCache(updatedFile);
-
-    res.clearCookie("cookiedExpiry");
-
-    return res.json({ message: "Welcome to your new account" });
 };
 
-async function grabTokens(req, res) {
-    const { email, password } = req.body;
-    const customer = await customerManagement.fetchCustomer(email);
-    const isValidCustomer = await customerManagement.isValidCustomer(customer, password);
+async function grabTokens(req, res, next) {
+    try {
+        const { email, password } = req.body;
+        const isValidCustomer = await customerManagement.isValidCustomer(email, password);
 
-    if (!customer || !isValidCustomer)
-        return res.sendStatus(401);
+        if (!isValidCustomer)
+           throw errors.ICGE;
 
-    const accessTokenPayload = await encrypter.encrypt({
-        email: email,
-        password: password,
-    });
-    const refreshTokenPayload = await encrypter.encrypt({ email: email });
-    const accessToken = await tokenizer.newAccessToken(accessTokenPayload);
-    const refreshToken = await tokenizer.newRefreshToken(refreshTokenPayload);
-    res.cookie("accessToken", accessToken, tokenCookieOptions);
-    res.cookie("refreshToken", refreshToken, tokenCookieOptions);
-    
-    return res.status(200).redirect("/my-account");
+        const accessTokenPayload = await encrypter.encrypt({
+            email: email,
+            password: password,
+        });
+        const refreshTokenPayload = await encrypter.encrypt({ email: email });
+        const accessToken = await tokenizer.newAccessToken(accessTokenPayload);
+        const refreshToken = await tokenizer.newRefreshToken(refreshTokenPayload);
+        res.cookie("accessToken", accessToken, tokenCookieOptions);
+        res.cookie("refreshToken", refreshToken, tokenCookieOptions);
+
+        return res.status(200).redirect("/my-account");
+
+    } catch (err) {
+        next(err);
+    };
 };
 
-async function resetAccessToken(req, res) {
-    const { refreshToken } = req.cookies;
-    const decoded = await tokenizer.verifyRefreshToken(refreshToken);
-    const refreshTokenPayload = await encrypter.decrypt(decoded);
-    const customer = await customerManagement.fetchCustomer(refreshTokenPayload?.email);
+async function resetAccessToken(req, res, next) {
+    try {
+        const { refreshToken } = req.cookies;
+        const decoded = await tokenizer.verifyRefreshToken(refreshToken);
+        const refreshTokenPayload = await encrypter.decrypt(decoded);
+        const customer = await customerManagement.fetchCustomer(refreshTokenPayload?.email);
 
-    if (!customer || !refreshToken) {
+        if (!customer || !refreshToken)
+            throw errors.ICTK;
+
+        const accessTokenPayload = await encrypter.encrypt({
+            userid: customer.email,
+            birthdate: customer.password
+        });
+        const accessToken = await tokenizer.newAccessToken(accessTokenPayload);
         res.clearCookie("accessToken");
-        return res.sendStatus(401);
-    };
-    const accessTokenPayload = await encrypter.encrypt({
-        userid: customer?.email,
-        birthdate: customer?.password
-    });
-    const accessToken = await tokenizer.newAccessToken(accessTokenPayload);
-    res.clearCookie("accessToken");
-    res.cookie("accessToken", accessToken, tokenCookieOptions);
+        res.cookie("accessToken", accessToken, tokenCookieOptions);
 
-    return res.redirect(req.query.path);
+        return res.redirect(req.query.path);
+
+    } catch (err) {
+        next(err);
+    };
 };
 
 module.exports = {

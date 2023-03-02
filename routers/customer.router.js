@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const errorHandler = require("../middlewares/errorHandler");
 
 const customer = require("../controllers/customer.controller");
 const customerAuthentication = require("../controllers/customerAuthentication.controller");
@@ -7,6 +8,7 @@ const adminAuthentication = require("../controllers/adminAuthentication.controll
 const customerRegistrationMiddleware = require("../middlewares/customerRegistration");
 const customerAuthenticationMiddleware = require("../middlewares/customerAuthentication");
 
+router.use(errorHandler);
 router.get("/", customer.viewAll);
 router.post("/signup", customerRegistrationMiddleware, customerAuthentication.sendVerificationEmail);
 router.post("/signup/verify", customerAuthentication.validateCode);

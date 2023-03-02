@@ -1,5 +1,6 @@
 const crypto = require("crypto");
 const { keyString, initVectorString } = require("../config/encryption.config");
+const errors = require("../config/errors.config");
 
 async function encrypt(object) {
     try {
@@ -11,7 +12,7 @@ async function encrypt(object) {
         
         return { encrypted };
     } catch (err) {
-        throw err;
+        throw errors.InternalServerError;
     };
 };
 
@@ -25,7 +26,7 @@ async function decrypt(object) {
 
         return JSON.parse(decrypted);
     } catch (err) {
-        throw err;
+        throw errors.InternalServerError;
     };
 };
 

@@ -1,9 +1,14 @@
-async function operatorAuthentication(req, res, next) {
-    if (!res.locals.isOperator) {
-        return res.status(403).json({ message: "You are not an operator" });
-    };
+const errors = require("../config/errors.config");
 
-    next();
+async function operatorAuthentication(req, res, next) {
+    try {
+        if (!res.locals.isOperator)
+            throw errors.InsuffPerm;
+            
+        next();
+    } catch (err) {
+        next(err);
+    };
 };
 
 module.exports = operatorAuthentication;
