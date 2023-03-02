@@ -52,10 +52,8 @@ async function validateCode(req, res, next) {
 async function grabTokens(req, res, next) {
     try {
         const { email, password } = req.body;
-        const isValidCustomer = await customerManagement.isValidCustomer(email, password);
-
-        if (!isValidCustomer)
-           throw errors.ICGE;
+        
+        await customerManagement.checkCustomerCredentials(email, password);
 
         const accessTokenPayload = await encrypter.encrypt({
             email: email,

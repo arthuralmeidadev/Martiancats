@@ -38,14 +38,22 @@ async function fetchCustomer(email) {
     };
 };
 
-async function isValidCustomer(email, secret) {
-    const customer = await Customer.findOne({ where: { email: email } });
-    return customer.secret === secret;
+async function checkCustomerCredentials(email, secret) {
+    try {
+        const customer = await Customer.findOne({ where: { email: email } });
+        const isValidCustomer = customer.secret === secret;
+
+        if (!isValidCustomer)
+            throw errors.ICGE;      
+
+    } catch (err) {
+        throw errors.ICGE;
+    };
 };
 
 module.exports = {
     createCustomer,
     isRegisteredCustomer,
     fetchCustomer,
-    isValidCustomer
+    checkCustomerCredentials
 };

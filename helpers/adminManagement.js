@@ -20,17 +20,21 @@ async function getRole(id) {
     };
 };
 
-async function isValidAdmin(id, birthdate, secret) {
+async function checkAdminCredentials(id, birthdate, secret) {
     try {
         const admin = await Admin.findOne({ where: { id: id } });
-        return admin?.birthdate === birthdate && admin?.secret === secret;
+        const isValidAdmin = admin?.birthdate === birthdate && admin?.secret === secret;
+
+        if (!isValidAdmin)
+            throw errors.Unauthorized;
+
     } catch (err) {
-        return false;
+        throw errors.Unauthorized;;
     };
     
 };
 module.exports = {
     fetchAdmin,
     getRole,
-    isValidAdmin
+    checkAdminCredentials
 };

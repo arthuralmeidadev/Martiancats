@@ -15,10 +15,8 @@ async function loadAdminLoginPage(req, res, next) {
 async function grabTokens(req, res, next) {
     try {
         const { userid, birthdate, secret } = req.body;
-        const isValidAdmin = await adminManagement.isValidAdmin(userid, birthdate, secret);
-
-        if (!isValidAdmin)
-            throw errors.Unauthorized;
+        
+        await adminManagement.checkAdminCredentials(userid, birthdate, secret);
 
         const role = await adminManagement.getRole(userid);
         const accessTokenPayload = await encrypter.encrypt({
