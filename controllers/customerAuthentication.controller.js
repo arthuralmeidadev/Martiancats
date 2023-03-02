@@ -1,10 +1,10 @@
-const emailing = require("../helpers/emailing");
-const encrypter = require("../helpers/encrypter");
-const tokenizer = require("../helpers/tokenizer");
-const customerManagement = require("../helpers/customerManagament");
-const cookieOptions = require("../config/expiryCookie.config");
-const tokenCookieOptions = require("../config/tokenCookie.config");
-const errors = require("../config/errors.config");
+import emailing from "../helpers/emailing.js";
+import encrypter from "../helpers/encrypter.js";
+import tokenizer from "../helpers/tokenizer.js";
+import customerManagement from "../helpers/customerManagament.js";
+import { cookieOptions } from "../config/expiryCookie.config.js";
+import { tokenCookieOptions } from "../config/tokenCookie.config.js";
+import { errors } from "../config/errors.config.js";
 
 async function sendVerificationEmail(req, res, next) {
     try {
@@ -97,7 +97,7 @@ async function resetAccessToken(req, res, next) {
     };
 };
 
-module.exports = {
+export default {
     sendVerificationEmail,
     validateCode,
     grabTokens,

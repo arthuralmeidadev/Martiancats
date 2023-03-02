@@ -22,7 +22,7 @@ async function viewProjects(req, res, next) {
     };
 };
 
-module.exports = {
+export default {
     viewAll,
     viewAccount,
     viewProjects

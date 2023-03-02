@@ -1,4 +1,4 @@
-const errors = require("../config/errors.config");
+import { errors } from "../config/errors.config.js";
 
 async function operatorAuthentication(req, res, next) {
     try {
@@ -11,4 +11,4 @@ async function operatorAuthentication(req, res, next) {
     };
 };
 
-module.exports = operatorAuthentication;
+export default operatorAuthentication;

@@ -7,4 +7,4 @@ function adminUserModel(sequelize, Sequelize) {
     return Admin;
 };
 
-module.exports = adminUserModel;
+export default adminUserModel;

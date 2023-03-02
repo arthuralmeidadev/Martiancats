@@ -1,14 +1,16 @@
-const express = require("express");
+import express from "express";
+
+// Controllers
+import customer from "../controllers/customer.controller.js";
+import customerAuthentication from "../controllers/customerAuthentication.controller.js";
+import adminAuthentication from "../controllers/adminAuthentication.controller.js";
+
+// Middlewares
+import customerRegistrationMiddleware from "../middlewares/customerRegistration.js";
+import customerAuthenticationMiddleware from "../middlewares/customerAuthentication.js";
+
 const router = express.Router();
-const errorHandler = require("../middlewares/errorHandler");
 
-const customer = require("../controllers/customer.controller");
-const customerAuthentication = require("../controllers/customerAuthentication.controller");
-const adminAuthentication = require("../controllers/adminAuthentication.controller");
-const customerRegistrationMiddleware = require("../middlewares/customerRegistration");
-const customerAuthenticationMiddleware = require("../middlewares/customerAuthentication");
-
-router.use(errorHandler);
 router.get("/", customer.viewAll);
 router.post("/signup", customerRegistrationMiddleware, customerAuthentication.sendVerificationEmail);
 router.post("/signup/verify", customerAuthentication.validateCode);
@@ -19,4 +21,4 @@ router.post("/my-projects", customerAuthenticationMiddleware, customer.viewProje
 router.get("/admin-login", adminAuthentication.loadAdminLoginPage);
 router.post("/admin-login", adminAuthentication.grabTokens);
 
-module.exports = router;
+export default router;

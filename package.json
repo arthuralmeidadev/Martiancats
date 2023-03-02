@@ -3,6 +3,7 @@
   "version": "1.0.1",
   "description": "\"Software solutions customer service\"",
   "main": "server.js",
+  "type": "module",
   "scripts": {
     "test": "prun",
     "start": "node server.js",

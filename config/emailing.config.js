@@ -1,5 +1,5 @@
-const nodemailer = require("nodemailer");
-const gmailCredentials = require("./gmail.config.js");
+import nodemailer from "nodemailer";
+import { gmailCredentials } from "./gmail.config.js";
 
 const transporter = nodemailer.createTransport({
     service: "gmail",
@@ -13,4 +13,4 @@ const transporter = nodemailer.createTransport({
     }
 });
 
-module.exports = transporter;
+export { transporter };

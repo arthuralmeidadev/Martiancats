@@ -8,4 +8,4 @@ function customerModel(sequelize, Sequelize) {
     return Customer;
 };
 
-module.exports = customerModel;
+export default customerModel;

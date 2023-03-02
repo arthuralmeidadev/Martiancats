@@ -1,8 +1,8 @@
-const encrypter = require("../helpers/encrypter");
-const tokenizer = require("../helpers/tokenizer");
-const adminManagement = require("../helpers/adminManagement");
-const cookieOptions = require("../config/tokenCookie.config");
-const errors = require("../config/errors.config");
+import encrypter from "../helpers/encrypter.js";
+import tokenizer from "../helpers/tokenizer.js";
+import adminManagement from "../helpers/adminManagement.js";
+import { tokenCookieOptions } from "../config/tokenCookie.config.js";
+import { errors } from "../config/errors.config.js";
 
 async function loadAdminLoginPage(req, res, next) {
     try {
@@ -28,8 +28,8 @@ async function grabTokens(req, res, next) {
         const accessToken = await tokenizer.newAccessToken(accessTokenPayload);
         const refreshTokenPayload = await encrypter.encrypt({ userid: userid });
         const refreshToken = await tokenizer.newRefreshToken(refreshTokenPayload);
-        res.cookie("accessToken", accessToken, cookieOptions);
-        res.cookie("refreshToken", refreshToken, cookieOptions);
+        res.cookie("accessToken", accessToken, tokenCookieOptions);
+        res.cookie("refreshToken", refreshToken, tokenCookieOptions);
         
         return res.status(200).redirect("/admin");
 
@@ -57,7 +57,7 @@ async function resetAccessToken(req, res, next) {
         });
         const accessToken = await tokenizer.newAccessToken(accessTokenPayload);
         res.clearCookie("accessToken");
-        res.cookie("accessToken", accessToken, cookieOptions);
+        res.cookie("accessToken", accessToken, tokenCookieOptions);
 
         return res.redirect(req.query.path);
         
@@ -66,7 +66,7 @@ async function resetAccessToken(req, res, next) {
     };
 };
 
-module.exports = {
+export default {
     loadAdminLoginPage,
     grabTokens,
     resetAccessToken,

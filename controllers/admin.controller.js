@@ -14,7 +14,7 @@ async function viewOperatorDashboard(req, res, next) {
     };
 };
 
-module.exports = {
+export default {
     viewDashboard,
     viewOperatorDashboard
 };

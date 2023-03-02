@@ -1,10 +1,9 @@
-const fs = require("fs-extra");
+import fs from "fs-extra";
+import { gmailCredentials } from "../config/gmail.config.js";
+import { transporter } from "../config/emailing.config.js";
+import { errors } from "../config/errors.config.js";
+
 const cachePath = "./cache/emailValidationCodes.json";
-const gmailCredentials = require("../config/gmail.config");
-const validationCodes = await fs.readJson(cachePath);
-const codesArray = validationCodes.map(entry => entry.code);
-const transporter = require("../config/emailing.config");
-const errors = require("../config/errors.config");
 
 function __random() {
     return Math.floor(Math.random() * 10);
@@ -27,9 +26,12 @@ async function createMail(destiny, name, code) {
 async function generateCode() {
     try {
         const code = `${__random()}${__random()}${__random()}${__random()}${__random()}${__random()}`;
-    
+        const validationCodes = await fs.readJson(cachePath);
+        const codesArray = validationCodes.map(entry => entry.code);
+
         if (codesArray.includes(code))
             generateCode();
+
         return code;
     } catch (err) {
         throw errors.InternalServerError;
@@ -46,6 +48,7 @@ async function getExpiry() {
 
 async function saveValidationCode(code, expiry, customerEmail, customerName) {
     try {
+        const validationCodes = await fs.readJson(cachePath);
         validationCodes.push({
             code: code,
             expiry: expiry,
@@ -60,6 +63,7 @@ async function saveValidationCode(code, expiry, customerEmail, customerName) {
 
 async function deleteValidationCode(code) {
     try {
+        const validationCodes = await fs.readJson(cachePath);
         return validationCodes.filter(
             entry => entry.code !== code &&
             entry.expiry >= Math.floor(Date.now() / 1000)
@@ -71,6 +75,7 @@ async function deleteValidationCode(code) {
 
 async function getCodeEntry(code) {
     try {
+        const validationCodes = await fs.readJson(cachePath);
         return validationCodes.filter(entry =>
             entry.code === code);
     } catch (err) {
@@ -80,6 +85,7 @@ async function getCodeEntry(code) {
 
 async function isValidEntry(code, cookiedExpiry) {
     try {
+        const validationCodes = await fs.readJson(cachePath);
         return validationCodes.filter(entry =>
             entry.code === code &&
             entry.expiry === cookiedExpiry);
@@ -104,7 +110,7 @@ async function sendVerificationEmail(mailOptions) {
     };
 };
 
-module.exports = {
+export default {
     createMail,
     generateCode,
     getExpiry,

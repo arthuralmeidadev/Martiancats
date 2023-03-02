@@ -25,7 +25,7 @@ NotFound.code = 404;
 Conflict.code = 409
 InternalServerError.code = 500;
 
-module.exports = {
+export const errors = {
     ICVC,
     ICGE,
     ICTK,

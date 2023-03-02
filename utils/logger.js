@@ -32,4 +32,4 @@ class Logger {
     };
 };
 
-module.exports = new Logger();
+export const logger = new Logger();

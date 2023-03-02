@@ -1,6 +1,6 @@
-const database = require("../models/initialization");
+import database from "../config/dbInitialization.config.js";
+import { errors } from "../config/errors.config.js";
 const Admin = database.admin;
-const errors = require("../config/errors.config");
 
 async function fetchAdmin(id) {
     try {
@@ -33,7 +33,7 @@ async function checkAdminCredentials(id, birthdate, secret) {
     };
     
 };
-module.exports = {
+export default {
     fetchAdmin,
     getRole,
     checkAdminCredentials

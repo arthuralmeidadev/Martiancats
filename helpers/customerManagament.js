@@ -1,6 +1,6 @@
-const database = require("../models/initialization");
+import database from "../config/dbInitialization.config.js";
+import { errors } from "../config/errors.config.js";
 const Customer = database.customer;
-const errors = require("../config/errors.config");
 
 async function createCustomer(email, rep) {
     try {
@@ -51,7 +51,7 @@ async function checkCustomerCredentials(email, secret) {
     };
 };
 
-module.exports = {
+export default {
     createCustomer,
     isRegisteredCustomer,
     fetchCustomer,

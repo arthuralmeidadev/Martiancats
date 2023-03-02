@@ -6,4 +6,4 @@ function adminRoleModel(sequelize, Sequelize) {
     return Role;
 };
 
-module.exports = adminRoleModel;
+export default adminRoleModel;

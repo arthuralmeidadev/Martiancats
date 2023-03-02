@@ -1,6 +1,10 @@
-const config = require("../config/database.config");
+import { config } from "./database.config.js";
+import Sequelize from "sequelize";
+import adminRoleModel from "../models/adminRole.model.js";
+import adminUserModel from "../models/adminUser.model.js";
+import customerModel from "../models/customer.model.js";
+
 const database = {};
-const Sequelize = require("sequelize");
 const sequelize = new Sequelize(
     config.DB,
     config.USER,
@@ -21,9 +25,9 @@ const sequelize = new Sequelize(
 
 database.Sequelize = Sequelize;
 database.sequelize = sequelize;
-database.admin = require("./adminUser.model.js")(sequelize, Sequelize);
-database.role = require("./adminRole.model.js")(sequelize, Sequelize);
-database.customer = require("./customer.model.js")(sequelize, Sequelize);
+database.admin = adminRoleModel(sequelize, Sequelize);
+database.role = adminUserModel(sequelize, Sequelize);
+database.customer = customerModel(sequelize, Sequelize);
 
 database.role.belongsToMany(database.admin, {
     through: "admin_roles",
@@ -39,4 +43,4 @@ database.admin.belongsToMany(database.role, {
 
 database.ROLES = ["assistant", "operator"];
 
-module.exports = database;
+export default database;

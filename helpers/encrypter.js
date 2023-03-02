@@ -1,6 +1,6 @@
-const crypto = require("crypto");
-const { keyString, initVectorString } = require("../config/encryption.config");
-const errors = require("../config/errors.config");
+import crypto from "crypto";
+import { errors } from "../config/errors.config.js";
+import { keyString, initVectorString } from "../config/encryption.config.js";
 
 async function encrypt(object) {
     try {
@@ -30,7 +30,7 @@ async function decrypt(object) {
     };
 };
 
-module.exports = {
+export default {
     encrypt,
     decrypt
 };

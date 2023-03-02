@@ -1,6 +1,6 @@
-const tokenizer = require("../helpers/tokenizer");
-const encrypter = require("../helpers/encrypter");
-const errors = require("../config/errors.config");
+import tokenizer from "../helpers/tokenizer.js";
+import encrypter from "../helpers/encrypter.js";
+import { errors } from "../config/errors.config.js";
 
 async function adminAuthenticationMiddleware(req, res, next) {
     try {
@@ -22,4 +22,4 @@ async function adminAuthenticationMiddleware(req, res, next) {
     
 };
 
-module.exports = adminAuthenticationMiddleware;
+export default adminAuthenticationMiddleware;

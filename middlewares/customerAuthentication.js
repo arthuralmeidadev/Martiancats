@@ -1,5 +1,5 @@
-const tokenizer = require("../helpers/tokenizer");
-const errors = require("../config/errors.config");
+import tokenizer from "../helpers/tokenizer.js";
+import { errors } from "../config/errors.config.js";
 
 async function customerAuthenticationMiddleware (req, res, next) {
     try {
@@ -16,4 +16,4 @@ async function customerAuthenticationMiddleware (req, res, next) {
     };
 };
 
-module.exports = customerAuthenticationMiddleware;
+export default customerAuthenticationMiddleware;

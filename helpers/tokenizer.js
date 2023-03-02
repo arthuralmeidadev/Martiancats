@@ -1,6 +1,6 @@
-const jwt = require("jsonwebtoken");
-const { accessTokenKey, refreshTokenKey } = require("../config/jwt.config");
-const errors = require("../config/errors.config");
+import jwt from "jsonwebtoken";
+import { accessTokenKey, refreshTokenKey } from "../config/jwt.config.js";
+import { errors } from "../config/errors.config.js";
 const refreshTokenClaims = {
     expiresIn: "1d" ,
     notBefore: "3m"
@@ -38,9 +38,9 @@ async function verifyRefreshToken(refreshToken) {
     };
 };
 
-module.exports = {
+export default {
     newAccessToken,
     newRefreshToken,
     verifyAccessToken,
     verifyRefreshToken
-}
+};

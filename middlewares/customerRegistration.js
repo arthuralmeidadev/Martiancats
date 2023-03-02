@@ -1,5 +1,5 @@
-const customerManagement = require("../helpers/customerManagament");
-const errors = require("../config/errors.config");
+import customerManagement from "../helpers/customerManagament.js";
+import { errors } from "../config/errors.config.js";
 
 async function customerRegistrationMiddleware (req, res, next) {
     try {
@@ -15,4 +15,4 @@ async function customerRegistrationMiddleware (req, res, next) {
     };
 };
 
-module.exports = customerRegistrationMiddleware;
+export default customerRegistrationMiddleware;
