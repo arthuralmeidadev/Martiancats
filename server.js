@@ -37,5 +37,5 @@ app.use(serveFavicon("./public/assets/favicon/icon.ico"));
 database.sequelize.sync();
 
 server.listen(4000, () => {
-    logger.info("Running at https://localhost/4000");
+    logger.info("Running at https://localhost:4000");
 });
