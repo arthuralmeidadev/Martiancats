@@ -42,7 +42,7 @@ async function validateCode(req, res, next) {
         await emailing.updateCache(updatedFile);
         res.clearCookie("cookiedExpiry");
 
-        return res.json({ message: "Welcome to your new account" });
+        return res.json({ message: "Welcome to your new account" }); // needs to be redirected to login
 
     } catch (err) {
         next(err);
