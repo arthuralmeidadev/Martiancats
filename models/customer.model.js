@@ -1,9 +1,9 @@
-function customerModel(sequelize, Sequelize) {
+function customerModel(sequelize, dataTypes) {
     const Customer = sequelize.define("customer", {
-        email: { type: Sequelize.STRING, primaryKey: true },
-        secret: { type: Sequelize.STRING },
-        rep: { type: Sequelize.STRING },
-        accountOptions: { type: Sequelize.JSON },
+        email: { type: dataTypes.STRING, primaryKey: true },
+        secret: { type: dataTypes.STRING },
+        rep: { type: dataTypes.STRING },
+        accountOptions: { type: dataTypes.JSON },
     });
     return Customer;
 };

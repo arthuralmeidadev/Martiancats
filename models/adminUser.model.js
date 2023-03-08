@@ -1,8 +1,8 @@
-function adminUserModel(sequelize, Sequelize) {
+function adminUserModel(sequelize, dataTypes) {
     const Admin = sequelize.define("admins", {
-        id: { type: Sequelize.INTEGER, primaryKey: true },
-        birthdate: { type: Sequelize.STRING },
-        secret: { type: Sequelize.STRING }
+        id: { type: dataTypes.INTEGER, primaryKey: true },
+        birthdate: { type: dataTypes.STRING },
+        secret: { type: dataTypes.STRING }
     });
     return Admin;
 };

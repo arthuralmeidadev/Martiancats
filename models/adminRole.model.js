@@ -1,7 +1,7 @@
-function adminRoleModel(sequelize, Sequelize) {
+function adminRoleModel(sequelize, dataTypes) {
     const Role = sequelize.define("roles", {
-        id: { type: Sequelize.INTEGER, primaryKey: true },
-        name: { type: Sequelize.STRING }
+        id: { type: dataTypes.INTEGER, primaryKey: true },
+        name: { type: dataTypes.STRING }
     });
     return Role;
 };
