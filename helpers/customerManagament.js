@@ -1,18 +1,25 @@
+import { randomBytes } from "crypto";
 import database from "../config/dbInitialization.config.js";
 import { errors } from "../config/errors.config.js";
 const Customer = database.customer;
 
 async function createCustomer(email, rep) {
     try {
-        await Customer.findOrCreate({
+        const placeHolder = randomBytes(4).toString("hex");
+        const [customer, exists] = await Customer.findOrCreate({
             where: { email: email },
+
             defaults: {
                 email: email,
-                secret: placeHolder,
+                secret: placeHolder, // needs to be sent via email
                 rep: rep,
                 accountOptions: {}
             }
         });
+
+        if (!exists)
+            console.log("sending password through email: " + placeHolder);
+
     } catch (err) {
         throw errors.FTRC;
     };
@@ -20,7 +27,9 @@ async function createCustomer(email, rep) {
 
 async function isRegisteredCustomer(email) {
     try {
-        const customer = await Customer.findOne({ where: { email: email } });
+        const customer = await Customer.findOne({
+            where: { email: email }
+        });
         if (customer)
             return true;
 
@@ -32,7 +41,9 @@ async function isRegisteredCustomer(email) {
 
 async function fetchCustomer(email) {
     try {
-        return await Customer.findOne({ where: { email: email } });
+        return await Customer.findOne({
+            where: { email: email }
+        });
     } catch (err) {
         return null;
     };
@@ -40,7 +51,9 @@ async function fetchCustomer(email) {
 
 async function checkCustomerCredentials(email, secret) {
     try {
-        const customer = await Customer.findOne({ where: { email: email } });
+        const customer = await Customer.findOne({
+            where: { email: email }
+        });
         const isValidCustomer = customer.secret === secret;
 
         if (!isValidCustomer)

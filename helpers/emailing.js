@@ -46,16 +46,19 @@ async function getExpiry() {
     };
 };
 
-async function saveValidationCode(code, expiry, customerEmail, customerName) {
+async function saveValidationCode(code, expiry, signupIssuer, fullName) {
     try {
+        const representative = fullName?.first + " " + fullName?.last;
         const validationCodes = await fs.readJson(cachePath);
         validationCodes.push({
             code: code,
             expiry: expiry,
-            customerEmail: customerEmail,
-            customerName: customerName
+            email: signupIssuer,
+            rep: representative
         });
+
         await fs.writeJson(cachePath, validationCodes, { spaces: 2 });
+
     } catch (err) {
         throw errors.InternalServerError;
     };
@@ -76,8 +79,11 @@ async function deleteValidationCode(code) {
 async function getCodeEntry(code) {
     try {
         const validationCodes = await fs.readJson(cachePath);
-        return validationCodes.filter(entry =>
-            entry.code === code);
+
+        const [entry] = (validationCodes.filter(entry =>
+            entry.code === code));
+            
+        return entry;
     } catch (err) {
         return errors.InternalServerError;
     };
