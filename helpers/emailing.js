@@ -12,7 +12,7 @@ function __random() {
 async function createMail(destiny, name, code) {
     try {
         return {
-            from: gmailCredentials.provider,
+            from: gmailCredentials.PROVIDER,
             to: destiny,
             subject: "Verification Code - Martiancats Accounts",
             text: `Hello ${name.first} ${name.last} This is your verification code: ${code}`,
