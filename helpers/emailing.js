@@ -9,6 +9,10 @@ function __random() {
     return Math.floor(Math.random() * 10);
 };
 
+function __newCode() {
+    return `${__random()}${__random()}${__random()}${__random()}${__random()}${__random()}`;
+};
+
 async function createMail(destiny, name, code) {
     try {
         return {
@@ -25,7 +29,7 @@ async function createMail(destiny, name, code) {
 
 async function generateCode() {
     try {
-        const code = `${__random()}${__random()}${__random()}${__random()}${__random()}${__random()}`;
+        const code = __newCode();
         const validationCodes = await fs.readJson(cachePath);
         const codesArray = validationCodes.map(entry => entry.code);
 
