@@ -3,6 +3,10 @@ const loginContainer = document.querySelector(".login-container");
 const accountContainer = document.querySelector(".account-container");
 const contactContainer = document.querySelector(".contact-container");
 
+
+const queries = (window.location.href).split("?")[1];
+const goto = queries.split("goto=")[1]; // may need better implementation
+
 async function signUpContainerAnimationEnd () {
     if (signUpContainer.style.animationName == "signup-out") {
         signUpContainer.style.animationPlayState = "paused";
@@ -46,4 +50,8 @@ async function signUpLoad() {
     accountContainer.scrollIntoView({behavior: "smooth", block: "end"});
     loginContainer.style.animationName = "login-out";
     loginContainer.style.animationPlayState = "running";
+};
+
+if (goto == "login") {
+    logInLoad();
 };

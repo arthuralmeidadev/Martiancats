@@ -13,7 +13,7 @@ function __newCode() {
     return `${__random()}${__random()}${__random()}${__random()}${__random()}${__random()}`;
 };
 
-async function createMail(destiny, name, code) {
+async function createValidationMail(destiny, name, code) {
     try {
         return {
             from: gmailCredentials.PROVIDER,
@@ -24,6 +24,21 @@ async function createMail(destiny, name, code) {
         };
     } catch (err) {
         throw errors.InternalServerError;
+    };
+};
+
+async function createPasswordSetMail(destiny, rep, password) {
+    try {
+        return {
+            from: gmailCredentials.PROVIDER,
+            to: destiny,
+            subject: "Account Signup Information - Martiancats Accounts",
+            text: `Hello ${rep} This is the password for your account: ${password}`+
+                `You can change it to a new one in your account options.`,
+            priority: "high"
+        };
+    } catch (err) {
+        
     };
 };
 
@@ -112,7 +127,7 @@ async function updateCache(updatedFile) {
     };
 };
 
-async function sendVerificationEmail(mailOptions) {
+async function sendEmail(mailOptions) {
     try {
         transporter.sendMail(mailOptions);
     } catch (err) {
@@ -121,7 +136,8 @@ async function sendVerificationEmail(mailOptions) {
 };
 
 export default {
-    createMail,
+    createValidationMail,
+    createPasswordSetMail,
     generateCode,
     getExpiry,
     saveValidationCode,
@@ -129,5 +145,5 @@ export default {
     getCodeEntry,
     isValidEntry,
     updateCache,
-    sendVerificationEmail
+    sendEmail
 };

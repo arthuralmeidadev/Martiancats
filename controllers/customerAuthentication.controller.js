@@ -12,10 +12,10 @@ async function sendVerificationEmail(req, res, next) {
         const fullName = { first: signupFirstName, last: signupLastName };
         const code = await emailing.generateCode();
         const expiry = await emailing.getExpiry();
-        const mailOptions = await emailing.createMail(signupIssuer, fullName, code);
+        const mailOptions = await emailing.createValidationMail(signupIssuer, fullName, code);
 
         await emailing.saveValidationCode(code, expiry, signupIssuer, fullName);
-        await emailing.sendVerificationEmail(mailOptions);
+        await emailing.sendEmail(mailOptions);
         res.cookie("cookiedExpiry", expiry, cookieOptions);
 
         return res.render("../views/customer/my-account/signup-verification");
@@ -37,12 +37,14 @@ async function validateCode(req, res, next) {
 
         const entry = await emailing.getCodeEntry(parsedCode);
         const updatedFile = await emailing.deleteValidationCode(parsedCode);
+        const [placeHolderPassword] = await customerManagement.createCustomer(entry.email, entry.rep);
+        const mailOptions = await emailing.createPasswordSetMail(entry.email, entry.rep, placeHolderPassword)
 
-        await customerManagement.createCustomer(entry.email, entry.rep);
+        await emailing.sendEmail(mailOptions);
         await emailing.updateCache(updatedFile);
         res.clearCookie("cookiedExpiry");
 
-        return res.json({ message: "Welcome to your new account" }); // needs to be redirected to login
+        return res.status(200).redirect("/?goto=login");
 
     } catch (err) {
         next(err);
@@ -66,7 +68,7 @@ async function grabTokens(req, res, next) {
         res.cookie("refreshToken", refreshToken, tokenCookieOptions);
 
         return res.status(200).redirect("/my-account");
-
+        
     } catch (err) {
         next(err);
     };

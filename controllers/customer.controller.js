@@ -1,7 +1,7 @@
 async function viewAll(req, res, next) {
     try {
         return res.render("../views/customer/homepage");
-    } catch (error) {
+    } catch (err) {
         next(err);
     };
 };
@@ -9,7 +9,7 @@ async function viewAll(req, res, next) {
 async function viewAccount(req, res, next) {
     try {
         
-    } catch (error) {
+    } catch (err) {
         next(err);
     };
 };
@@ -17,7 +17,7 @@ async function viewAccount(req, res, next) {
 async function viewProjects(req, res, next) {
     try {
         
-    } catch (error) {
+    } catch (err) {
         next(err);
     };
 };
