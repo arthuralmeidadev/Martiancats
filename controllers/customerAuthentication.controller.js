@@ -37,7 +37,7 @@ async function validateCode(req, res, next) {
 
         const entry = await emailing.getCodeEntry(parsedCode);
         const updatedFile = await emailing.deleteValidationCode(parsedCode);
-        const [placeHolderPassword] = await customerManagement.createCustomer(entry.email, entry.rep);
+        const placeHolderPassword = await customerManagement.createCustomer(entry.email, entry.rep);
         const mailOptions = await emailing.createPasswordSetMail(entry.email, entry.rep, placeHolderPassword)
 
         await emailing.sendEmail(mailOptions);
@@ -60,8 +60,8 @@ async function grabTokens(req, res, next) {
         const accessTokenPayload = await encrypter.encrypt({
             email: email,
             password: password,
-        });
-        const refreshTokenPayload = await encrypter.encrypt({ email: email });
+        }, "object");
+        const refreshTokenPayload = await encrypter.encrypt({ email: email }, "object");
         const accessToken = await tokenizer.newAccessToken(accessTokenPayload);
         const refreshToken = await tokenizer.newRefreshToken(refreshTokenPayload);
         res.cookie("accessToken", accessToken, tokenCookieOptions);
@@ -78,16 +78,15 @@ async function resetAccessToken(req, res, next) {
     try {
         const { refreshToken } = req.cookies;
         const decoded = await tokenizer.verifyRefreshToken(refreshToken);
-        const refreshTokenPayload = await encrypter.decrypt(decoded);
+        const refreshTokenPayload = await encrypter.decrypt(decoded, "object");
         const customer = await customerManagement.fetchCustomer(refreshTokenPayload?.email);
 
         if (!customer || !refreshToken)
             throw errors.ICTK;
 
-        const accessTokenPayload = await encrypter.encrypt({
-            userid: customer.email,
-            birthdate: customer.password
-        });
+        const accessTokenPayload = await encrypter.encrypt(
+            { userid: customer.email, birthdate: customer.password }, "object");
+
         const accessToken = await tokenizer.newAccessToken(accessTokenPayload);
         res.clearCookie("accessToken");
         res.cookie("accessToken", accessToken, tokenCookieOptions);

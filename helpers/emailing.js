@@ -2,6 +2,7 @@ import fs from "fs-extra";
 import { gmailCredentials } from "../config/gmail.config.js";
 import { transporter } from "../config/emailing.config.js";
 import { errors } from "../config/errors.config.js";
+import encrypter from "./encrypter.js";
 
 const cachePath = "./cache/emailValidationCodes.json";
 
@@ -38,7 +39,7 @@ async function createPasswordSetMail(destiny, rep, password) {
             priority: "high"
         };
     } catch (err) {
-        
+        throw errors.InternalServerError;
     };
 };
 
@@ -72,8 +73,8 @@ async function saveValidationCode(code, expiry, signupIssuer, fullName) {
         validationCodes.push({
             code: code,
             expiry: expiry,
-            email: signupIssuer,
-            rep: representative
+            email: await encrypter.encrypt(signupIssuer),
+            rep: await encrypter.encrypt(representative)
         });
 
         await fs.writeJson(cachePath, validationCodes, { spaces: 2 });
@@ -98,13 +99,15 @@ async function deleteValidationCode(code) {
 async function getCodeEntry(code) {
     try {
         const validationCodes = await fs.readJson(cachePath);
-
         const [entry] = (validationCodes.filter(entry =>
             entry.code === code));
             
+        entry.email = await encrypter.decrypt(entry.email);
+        entry.rep = await encrypter.decrypt(entry.rep);
         return entry;
+
     } catch (err) {
-        return errors.InternalServerError;
+        throw errors.InternalServerError;
     };
 };
 
@@ -115,7 +118,7 @@ async function isValidEntry(code, cookiedExpiry) {
             entry.code === code &&
             entry.expiry === cookiedExpiry);
     } catch (err) {
-        return errors.InternalServerError;
+        throw errors.InternalServerError;
     };
 };
 

@@ -6,7 +6,7 @@ const Customer = database.customer;
 async function createCustomer(email, rep) {
     try {
         const placeHolderPassword = randomBytes(4).toString("hex");
-        const [customer, exists] = await Customer.findOrCreate({
+        const [customer, created] = await Customer.findOrCreate({
             where: { email: email },
 
             defaults: {
@@ -16,10 +16,8 @@ async function createCustomer(email, rep) {
                 accountOptions: {}
             }
         });
-
-        if (!exists)
-            console.log("sending password through email: " + placeHolderPassword);
-            return [placeHolderPassword];
+        if (created)
+            return placeHolderPassword;
 
     } catch (err) {
         throw errors.FTRC;
