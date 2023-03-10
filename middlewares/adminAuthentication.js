@@ -12,7 +12,7 @@ async function adminAuthenticationMiddleware(req, res, next) {
         await tokenizer.verifyAccessToken(accessToken);
 
         const decoded = await tokenizer.verifyAccessToken(accessToken);
-        const payload = await encrypter.decrypt(decoded);
+        const payload = await encrypter.decrypt(decoded, "object");
         res.locals.isOperator = payload.role === "operator";
 
         next();

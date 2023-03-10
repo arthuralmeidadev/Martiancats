@@ -24,9 +24,9 @@ async function grabTokens(req, res, next) {
             birthdate: birthdate,
             secret: secret,
             role: role
-        });
+        }, "object");
         const accessToken = await tokenizer.newAccessToken(accessTokenPayload);
-        const refreshTokenPayload = await encrypter.encrypt({ userid: userid });
+        const refreshTokenPayload = await encrypter.encrypt({ userid: userid }, "object");
         const refreshToken = await tokenizer.newRefreshToken(refreshTokenPayload);
         res.cookie("accessToken", accessToken, tokenCookieOptions);
         res.cookie("refreshToken", refreshToken, tokenCookieOptions);
@@ -42,7 +42,7 @@ async function resetAccessToken(req, res, next) {
     try {
         const { refreshToken } = req.cookies;
         const decoded = await tokenizer.verifyRefreshToken(refreshToken);
-        const refreshTokenPayload = await encrypter.decrypt(decoded);
+        const refreshTokenPayload = await encrypter.decrypt(decoded, "object");
         const admin = await adminManagement.fetchAdmin(refreshTokenPayload?.userid);
 
         if (!admin || !refreshToken)
@@ -54,7 +54,7 @@ async function resetAccessToken(req, res, next) {
             birthdate: admin.birthdate,
             secret: admin.secret,
             role: role
-        });
+        }, "object");
         const accessToken = await tokenizer.newAccessToken(accessTokenPayload);
         res.clearCookie("accessToken");
         res.cookie("accessToken", accessToken, tokenCookieOptions);
