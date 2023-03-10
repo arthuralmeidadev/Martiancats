@@ -35,10 +35,10 @@ async function validateCode(req, res, next) {
         if (!isValidEntry) 
             throw errors.ICVC;
 
-        const entry = await emailing.getCodeEntry(parsedCode);
+        const { email, rep } = await emailing.getCodeEntry(parsedCode);
         const updatedFile = await emailing.deleteValidationCode(parsedCode);
-        const placeHolderPassword = await customerManagement.createCustomer(entry.email, entry.rep);
-        const mailOptions = await emailing.createPasswordSetMail(entry.email, entry.rep, placeHolderPassword)
+        const placeHolderPassword = await customerManagement.createCustomer(email, rep);
+        const mailOptions = await emailing.createPasswordSetMail(email, rep, placeHolderPassword)
 
         await emailing.sendEmail(mailOptions);
         await emailing.updateCache(updatedFile);
@@ -57,10 +57,9 @@ async function grabTokens(req, res, next) {
         
         await customerManagement.checkCustomerCredentials(email, password);
 
-        const accessTokenPayload = await encrypter.encrypt({
-            email: email,
-            password: password,
-        }, "object");
+        const accessTokenPayload = await encrypter.encrypt(
+            { email: email, password: password, }, "object");
+            
         const refreshTokenPayload = await encrypter.encrypt({ email: email }, "object");
         const accessToken = await tokenizer.newAccessToken(accessTokenPayload);
         const refreshToken = await tokenizer.newRefreshToken(refreshTokenPayload);
@@ -84,8 +83,9 @@ async function resetAccessToken(req, res, next) {
         if (!customer || !refreshToken)
             throw errors.ICTK;
 
+        const { email, password } = customer;
         const accessTokenPayload = await encrypter.encrypt(
-            { userid: customer.email, birthdate: customer.password }, "object");
+            { userid: email, password: password }, "object");
 
         const accessToken = await tokenizer.newAccessToken(accessTokenPayload);
         res.clearCookie("accessToken");

@@ -48,12 +48,12 @@ async function fetchCustomer(email) {
     };
 };
 
-async function checkCustomerCredentials(email, secret) {
+async function checkCustomerCredentials(email, Secret) {
     try {
-        const customer = await Customer.findOne({
+        const { secret } = await Customer.findOne({
             where: { email: email }
         });
-        const isValidCustomer = customer.secret === secret;
+        const isValidCustomer = secret === Secret;
 
         if (!isValidCustomer)
             throw errors.ICGE;      

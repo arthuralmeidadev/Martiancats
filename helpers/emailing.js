@@ -15,12 +15,13 @@ function __newCode() {
 };
 
 async function createValidationMail(destiny, name, code) {
+    const { first, last } = name;
     try {
         return {
             from: gmailCredentials.PROVIDER,
             to: destiny,
             subject: "Verification Code - Martiancats Accounts",
-            text: `Hello ${name.first} ${name.last} This is your verification code: ${code}`,
+            text: `Hello ${first} ${last} This is your verification code: ${code}`,
             priority: "high"
         };
     } catch (err) {
@@ -68,7 +69,7 @@ async function getExpiry() {
 
 async function saveValidationCode(code, expiry, signupIssuer, fullName) {
     try {
-        const representative = fullName?.first + " " + fullName?.last;
+        const representative = `${fullName?.first} ${fullName?.last}`;
         const validationCodes = await fs.readJson(cachePath);
         validationCodes.push({
             code: code,

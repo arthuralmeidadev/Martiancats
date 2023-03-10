@@ -20,10 +20,10 @@ async function getRole(id) {
     };
 };
 
-async function checkAdminCredentials(id, birthdate, secret) {
+async function checkAdminCredentials(ID, Birthdate, Secret) {
     try {
-        const admin = await Admin.findOne({ where: { id: id } });
-        const isValidAdmin = admin?.birthdate === birthdate && admin?.secret === secret;
+        const { brithdate, secret } = await Admin.findOne({ where: { id: ID } });
+        const isValidAdmin = brithdate === Birthdate && secret === Secret;
 
         if (!isValidAdmin)
             throw errors.Unauthorized;
