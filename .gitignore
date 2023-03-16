@@ -3,4 +3,5 @@
 /config/sslcert
 /config/jwt.config.js
 /config/gmail.config.js
+/config/database.config.js
 /config/encryption.config.js
