@@ -18,7 +18,6 @@ async function encrypt(data, type="string") {
             encrypted += cipher.final("hex");    
             return { encrypted };
         };
-        
     } catch (err) {
         throw errors.InternalServerError;
     };
@@ -38,7 +37,6 @@ async function decrypt(data, type="string") {
             decrypted += decipher.final("utf-8");
             return JSON.parse(decrypted);
         };
-        
     } catch (err) {
         throw errors.InternalServerError;
     };
