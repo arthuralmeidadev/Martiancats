@@ -14,9 +14,9 @@ async function newAccessToken(payload) {
     };
 };
 
-async function newRefreshToken(userid) {
+async function newRefreshToken(payload) {
     try {
-        return jwt.sign({ userid: userid }, refreshTokenKey, refreshTokenClaims);
+        return jwt.sign(payload, refreshTokenKey, refreshTokenClaims);
     } catch (err) {
         throw errors.InternalServerError;
     };
